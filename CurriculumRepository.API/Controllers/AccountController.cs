@@ -1,9 +1,7 @@
-﻿using CurriculumRepository.API.Helpers;
-using CurriculumRepository.API.Services;
-using CurriculumRepository.CORE.Data.Models;
+﻿using CurriculumRepository.API.Services.Account;
+using CurriculumRepository.CORE.Data.Models.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

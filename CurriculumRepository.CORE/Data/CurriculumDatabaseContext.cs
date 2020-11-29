@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CurriculumRepository.API.Models.Entities;
+using CurriculumRepository.CORE.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CurriculumRepository.API.Models
+namespace CurriculumRepository.CORE.Data
 {
     public partial class CurriculumDatabaseContext : DbContext
     {
@@ -275,6 +277,8 @@ namespace CurriculumRepository.API.Models
                 entity.Property(e => e.LstypeId).HasColumnName("LSTypeID");
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
+
+                entity.Property(e => e.IsDeleted).HasColumnName("IsDeleted");
 
                 entity.HasOne(d => d.LearningOutcomeCt)
                     .WithMany(p => p.Ls)
@@ -560,10 +564,10 @@ namespace CurriculumRepository.API.Models
             return base.SaveChanges();
         }
 
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             UpdateSoftDeleteStatuses();
-            return (await base.SaveChangesAsync(true, cancellationToken));
+            return await base.SaveChangesAsync(true, cancellationToken);
         }
 
         private void UpdateSoftDeleteStatuses()

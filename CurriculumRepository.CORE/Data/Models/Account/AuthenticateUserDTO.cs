@@ -1,4 +1,4 @@
-﻿namespace CurriculumRepository.CORE.Data.Models
+﻿namespace CurriculumRepository.CORE.Data.Models.Account
 {
     public class AuthenticateUserDTO
     {

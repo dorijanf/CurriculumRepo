@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace HotelApp.API.Extensions.Exceptions
+namespace CurriculumRepository.API.Extensions.Exceptions
 {
     public class NotAuthorizedException : Exception
     {

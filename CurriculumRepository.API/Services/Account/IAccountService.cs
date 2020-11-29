@@ -1,8 +1,9 @@
 ﻿using CurriculumRepository.API.Models;
-using CurriculumRepository.CORE.Data.Models;
+using CurriculumRepository.CORE.Data.Models.Account;
+using CurriculumRepository.CORE.Entities;
 using System.Threading.Tasks;
 
-namespace CurriculumRepository.API.Services
+namespace CurriculumRepository.API.Services.Account
 {
     public interface IAccountService
     {

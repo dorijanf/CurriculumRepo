@@ -1,7 +1,7 @@
-﻿using System;
+﻿using CurriculumRepository.API.Models.Entities;
 using System.Collections.Generic;
 
-namespace CurriculumRepository.API.Models
+namespace CurriculumRepository.CORE.Entities
 {
     public partial class Lstype
     {

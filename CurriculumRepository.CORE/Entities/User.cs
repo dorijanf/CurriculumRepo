@@ -1,8 +1,9 @@
-﻿using CurriculumRepository.CORE.Data.Helpers;
+﻿using CurriculumRepository.API.Models.Entities;
+using CurriculumRepository.CORE.Data.Helpers;
 using System;
 using System.Collections.Generic;
 
-namespace CurriculumRepository.API.Models
+namespace CurriculumRepository.CORE.Entities
 {
     public partial class User : IDeletable
     {

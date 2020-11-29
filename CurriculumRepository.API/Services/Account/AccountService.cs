@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using CurriculumRepository.API.Configuration;
-using CurriculumRepository.API.Models;
-using CurriculumRepository.CORE.Data.Models;
-using HotelApp.API.Extensions.Exceptions;
+using CurriculumRepository.CORE.Data.Enums;
+using CurriculumRepository.CORE.Data.Models.Account;
+using CurriculumRepository.API.Extensions.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,8 +14,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using CurriculumRepository.CORE.Entities;
+using CurriculumRepository.CORE.Data;
 
-namespace CurriculumRepository.API.Services
+namespace CurriculumRepository.API.Services.Account
 {
     public class AccountService : IAccountService
     {
@@ -107,9 +109,8 @@ namespace CurriculumRepository.API.Services
 
             // TO DO: Implement image
             model.ProfilePicture = null;
-            var userType = await context.UserType.FirstOrDefaultAsync(x => x.UserTypeName == model.Role);
             var user = mapper.Map<User>(model);
-            user.UserType = userType;
+            user.UserTypeId = (int) UserTypeEnum.Korisnik;
             user.RegistrationDate = DateTime.Now;
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
@@ -220,8 +221,10 @@ namespace CurriculumRepository.API.Services
         /// <returns>TokenResult containing the token and expiration date</returns>
         private async Task<TokenResult> CreateTokenAsync(User user)
         {
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Iduser.ToString()));
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Iduser.ToString())
+            };
             var userType = await context.UserType.FindAsync(user.UserTypeId);
             var userRoles = new List<string> { userType.UserTypeName };
             claims.AddRange(userRoles.Select(x => new Claim(ClaimTypes.Role, x)));

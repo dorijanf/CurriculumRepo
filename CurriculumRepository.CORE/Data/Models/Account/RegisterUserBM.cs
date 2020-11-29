@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CurriculumRepository.CORE.Data.Models
+﻿namespace CurriculumRepository.CORE.Data.Models.Account
 {
-    public class UpdateUserBM
+    public class RegisterUserBM
     {
         public string Firstname { get; set; }
         public string Lastname { get; set; }
+        public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public byte[] ProfilePicture { get; set; }

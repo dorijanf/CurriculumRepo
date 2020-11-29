@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Linq.Dynamic.Core;
 
-namespace CurriculumRepository.CORE.Data.Validators
+namespace CurriculumRepository.CORE.Data.Validators.Account
 {
     public static class ValidationHelpers
     {

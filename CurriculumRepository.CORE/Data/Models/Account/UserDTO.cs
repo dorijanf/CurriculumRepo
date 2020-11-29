@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace CurriculumRepository.CORE.Data.Models
+namespace CurriculumRepository.CORE.Data.Models.Account
 {
     public class UserDTO
     {

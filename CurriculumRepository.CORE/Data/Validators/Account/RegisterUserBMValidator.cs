@@ -1,10 +1,7 @@
-﻿using CurriculumRepository.API.Models;
-using CurriculumRepository.CORE.Data.Models;
+﻿using CurriculumRepository.CORE.Data.Models.Account;
 using FluentValidation;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
-namespace CurriculumRepository.CORE.Data.Validators
+namespace CurriculumRepository.CORE.Data.Validators.Account
 {
     public class RegisterUserBMValidator : AbstractValidator<RegisterUserBM>
     {

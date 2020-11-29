@@ -10,14 +10,21 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using CurriculumRepository.API.Configuration;
-using CurriculumRepository.API.Services;
 using FluentValidation;
-using CurriculumRepository.CORE.Data.Models;
-using CurriculumRepository.CORE.Data.Validators;
-using CurriculumRepository.API.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Newtonsoft.Json;
+using CurriculumRepository.CORE.Data.Models.Account;
+using CurriculumRepository.CORE.Data.Validators.Account;
+using CurriculumRepository.API.Services.Account;
+using CurriculumRepository.API.Services.Scenario;
+using CurriculumRepository.API.Services.Activity;
+using CurriculumRepository.CORE.Data;
+using CurriculumRepository.API.Repositories.KeywordRepository;
+using CurriculumRepository.API.Repositories.LearningOutcomeCtRepository;
+using CurriculumRepository.API.Repositories.LearningOutcomeSubjectRepository;
+using CurriculumRepository.API.Repositories.LsCorrelationRepository;
+using CurriculumRepository.Models.Repositories.LsCorrelationRepository;
 
 namespace CurriculumRepository
 {
@@ -34,7 +41,7 @@ namespace CurriculumRepository
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
                 .WriteTo.Console()
-                .WriteTo.File("log-.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
         }
         public IConfiguration Configuration { get; }
@@ -51,7 +58,7 @@ namespace CurriculumRepository
             }).AddFluentValidation()
               .AddNewtonsoftJson(opt => {
                   opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                  opt.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                  opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
               });
 
             // Swagger
@@ -59,7 +66,7 @@ namespace CurriculumRepository
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "HotelApp",
+                    Title = "Curriculum Repository API",
                     Version = "v1"
                 });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -129,6 +136,14 @@ namespace CurriculumRepository
 
             // Controller services
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IScenarioService, ScenarioService>();
+            services.AddScoped<IActivityService, ActivityService>();
+
+            // Repositories
+            services.AddScoped<IKeywordRepository, KeywordRepository>();
+            services.AddScoped<ILearningOutcomeCtRepository, LearningOutcomeCtRepository>();
+            services.AddScoped<ILearningOutcomeSubjectRepository, LearningOutcomeSubjectRepository>();
+            services.AddScoped<ILsCorrelationInterdisciplinarityRepository, LsCorrelationInterdisciplinarityRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

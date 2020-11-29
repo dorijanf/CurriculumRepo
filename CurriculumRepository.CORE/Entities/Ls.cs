@@ -1,9 +1,10 @@
-﻿using System;
+﻿using CurriculumRepository.CORE.Data.Helpers;
+using CurriculumRepository.CORE.Entities;
 using System.Collections.Generic;
 
-namespace CurriculumRepository.API.Models
+namespace CurriculumRepository.API.Models.Entities
 {
-    public partial class Ls
+    public partial class Ls : IDeletable
     {
         public Ls()
         {
@@ -15,7 +16,7 @@ namespace CurriculumRepository.API.Models
         public int Idls { get; set; }
         public string Lsname { get; set; }
         public string Lsdescription { get; set; }
-        public byte Lsduration { get; set; }
+        public int Lsduration { get; set; }
         public string Lsacknowledgment { get; set; }
         public int UserId { get; set; }
         public int TeachingSubjectId { get; set; }
@@ -23,6 +24,7 @@ namespace CurriculumRepository.API.Models
         public int LearningOutcomeSubjectId { get; set; }
         public int LearningOutcomeCtid { get; set; }
         public int? Lsgrade { get; set; }
+        public bool IsDeleted { get; set; }
 
         public virtual LearningOutcomeCt LearningOutcomeCt { get; set; }
         public virtual LearningOutcomeSubject LearningOutcomeSubject { get; set; }

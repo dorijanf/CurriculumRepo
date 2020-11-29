@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace CurriculumRepository.API.Models
+namespace CurriculumRepository.CORE.Entities
 {
     public partial class TeachingAid
     {

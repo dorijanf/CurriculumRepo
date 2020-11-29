@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CurriculumRepository.API.Models.Entities;
 
-namespace CurriculumRepository.API.Models
+namespace CurriculumRepository.CORE.Entities
 {
     public partial class Lsla
     {
