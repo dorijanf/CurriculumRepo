@@ -1,2 +1,3 @@
 # CurriculumRepo
-A curriculum repository project made as a final thesis project
+Final thesis project.
+A repository where teachers can store and view syllabuses. 
