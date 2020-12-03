@@ -6,7 +6,8 @@ namespace CurriculumRepository.Models.Repositories.LsCorrelationRepository
 {
     public interface ILsCorrelationInterdisciplinarityRepository
     {
-        public Task CreateTeachingCorrelationSubjects(List<int> subjectIds, int lsId);
-        public IEnumerable<LscorrelationInterdisciplinarity> GetLsCorrByLsId(int lsid);
+        Task CreateTeachingCorrelationSubjects(List<int> subjectIds, int lsId);
+        IEnumerable<LscorrelationInterdisciplinarity> GetLsCorrByLsId(int lsid);
+        void RemoveLsCorr(int lsId);
     }
 }

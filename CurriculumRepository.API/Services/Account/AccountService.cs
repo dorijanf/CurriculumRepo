@@ -91,7 +91,7 @@ namespace CurriculumRepository.API.Services.Account
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Newly created user entity</returns>
-        public async Task<User> Create(RegisterUserBM model)
+        public async Task<int> Create(RegisterUserBM model)
         {
             // username validation
             if (await context.User.AnyAsync(x => x.Username == model.Username))
@@ -119,7 +119,7 @@ namespace CurriculumRepository.API.Services.Account
             await context.SaveChangesAsync();
             logger.LogInformation($"User { user.Username } successfully created.");
 
-            return user;
+            return user.Iduser;
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace CurriculumRepository.API.Services.Account
         /// Updates an existing user with data provided in UpdateUserBM
         /// </summary>
         /// <param name="model"></param>
-        public async Task Update(UpdateUserBM model)
+        public async Task<int> Update(UpdateUserBM model)
         {
             var user = await context.User.FirstOrDefaultAsync(x => x.Iduser.ToString() == httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
@@ -171,6 +171,7 @@ namespace CurriculumRepository.API.Services.Account
             user = mapper.Map(model, user);
             await context.SaveChangesAsync();
             logger.LogInformation($"User { user.Username } successfully updated.");
+            return user.Iduser;
         }
 
         /// <summary>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CurriculumRepository.CORE.Entities
 {
-    public partial class Keyword : IDeletable
+    public partial class Keyword
     {
         public Keyword()
         {
@@ -12,7 +12,6 @@ namespace CurriculumRepository.CORE.Entities
 
         public int Idkeyword { get; set; }
         public string KeywordName { get; set; }
-        public bool IsDeleted { get; set; }
         public virtual ICollection<Lskeyword> Lskeyword { get; set; }
     }
 }

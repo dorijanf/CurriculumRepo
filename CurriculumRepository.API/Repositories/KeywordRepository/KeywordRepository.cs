@@ -1,5 +1,6 @@
 ﻿using CurriculumRepository.CORE.Data;
 using CurriculumRepository.CORE.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,19 +9,16 @@ namespace CurriculumRepository.API.Repositories.KeywordRepository
 {
     class KeywordRepository : IKeywordRepository
     {
-        private readonly CurriculumDatabaseContext curriculumDatabaseContext;
+        private readonly CurriculumDatabaseContext context;
 
-        public KeywordRepository(CurriculumDatabaseContext curriculumDatabaseContext)
+        public KeywordRepository(CurriculumDatabaseContext context)
         {
-            this.curriculumDatabaseContext = curriculumDatabaseContext;
+            this.context = context;
         }
 
-        public IEnumerable<Keyword> GetAllKeywords
+        public async Task<IEnumerable<Keyword>> GetAllKeywords()
         {
-            get
-            {
-                return curriculumDatabaseContext.Keyword;
-            }
+            return await context.Keyword.ToListAsync();
         }
 
         public async Task CreateKeywords(List<string> keywords, int lsId)
@@ -28,7 +26,7 @@ namespace CurriculumRepository.API.Repositories.KeywordRepository
             Keyword kwrd = null;
             foreach (var keyword in keywords)
             {
-                if (null != (kwrd = curriculumDatabaseContext.Keyword.FirstOrDefault(x => x.KeywordName == keyword)))
+                if (null != (kwrd = context.Keyword.FirstOrDefault(x => x.KeywordName == keyword)))
                 {
                 }
                 else
@@ -37,22 +35,39 @@ namespace CurriculumRepository.API.Repositories.KeywordRepository
                     {
                         KeywordName = keyword
                     };
+                    context.Keyword.Add(kwrd);
+                    await context.SaveChangesAsync();
                 }
-                curriculumDatabaseContext.Keyword.Add(kwrd);
                 await CreateLsKeyword(kwrd.Idkeyword, lsId);
             }
-            await curriculumDatabaseContext.SaveChangesAsync();
         }
 
         private async Task CreateLsKeyword(int keywordId, int lsId)
         {
-            var lsKeyword = new Lskeyword
+            var lsKeywordExists = context.Lskeyword.Where(x => x.Keywordid == keywordId && x.Lsid == lsId);
+
+            if (lsKeywordExists != null)
             {
-                Keywordid = keywordId,
-                Lsid = lsId
-            };
-            curriculumDatabaseContext.Lskeyword.Add(lsKeyword);
-            await curriculumDatabaseContext.SaveChangesAsync();
+                var lsKeyword = new Lskeyword
+                {
+                    Keywordid = keywordId,
+                    Lsid = lsId
+                };
+                context.Lskeyword.Add(lsKeyword);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public void RemoveKeywords(List<string> keywords, int lsId)
+        {
+            var lsKeywords = context.Lskeyword.Where(x => x.Idlskeyword == lsId);
+            context.RemoveRange(lsKeywords);
+            context.SaveChanges();
+        }
+
+        public Keyword GetKeyword(string name)
+        {
+            return context.Keyword.FirstOrDefault(x => x.KeywordName == name);
         }
     }
 }

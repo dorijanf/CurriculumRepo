@@ -1,5 +1,4 @@
-﻿using CurriculumRepository.CORE.Data.Models;
-using CurriculumRepository.CORE.Data.Models.Account;
+﻿using CurriculumRepository.CORE.Data.Models.Account;
 using FluentValidation;
 namespace CurriculumRepository.CORE.Data.Validators.Account
 {

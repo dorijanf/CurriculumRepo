@@ -558,12 +558,6 @@ namespace CurriculumRepository.CORE.Data
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
-        public override int SaveChanges()
-        {
-            UpdateSoftDeleteStatuses();
-            return base.SaveChanges();
-        }
-
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             UpdateSoftDeleteStatuses();

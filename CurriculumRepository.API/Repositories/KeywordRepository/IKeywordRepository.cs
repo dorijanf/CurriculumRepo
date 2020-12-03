@@ -6,7 +6,9 @@ namespace CurriculumRepository.API.Repositories.KeywordRepository
 {
     public interface IKeywordRepository
     {
-        IEnumerable<Keyword> GetAllKeywords { get; }
+        Task<IEnumerable<Keyword>> GetAllKeywords();
         Task CreateKeywords(List<string> keywords, int lsId);
+        void RemoveKeywords(List<string> keywords, int lsId);
+        Keyword GetKeyword(string name);
     }
 }

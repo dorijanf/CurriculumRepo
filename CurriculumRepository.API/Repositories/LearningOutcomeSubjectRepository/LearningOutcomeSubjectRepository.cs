@@ -2,7 +2,6 @@
 using CurriculumRepository.CORE.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CurriculumRepository.API.Repositories.LearningOutcomeSubjectRepository
@@ -29,12 +28,20 @@ namespace CurriculumRepository.API.Repositories.LearningOutcomeSubjectRepository
             var learningOutcomeSubjectString = "";
             foreach (var lo in los)
             {
-                learningOutcomeSubjectString = lo + "\n";
+                learningOutcomeSubjectString += lo + "||";
             }
-            var learningOutcomeCt = new LearningOutcomeCt { LearningOutcomeCtstatement = learningOutcomeSubjectString };
-            curriculumDatabaseContext.LearningOutcomeCt.Add(learningOutcomeCt);
-            await curriculumDatabaseContext.SaveChangesAsync();
-            return learningOutcomeCt.IdlearningOutcomeCt;
+            LearningOutcomeSubject learningSubject= null;
+            if((learningSubject = await curriculumDatabaseContext.LearningOutcomeSubject.FirstOrDefaultAsync(x => x.LearningOutcomeSubjectStatement == learningOutcomeSubjectString)) == null)
+            {
+                var learningOutcomeSubject = new LearningOutcomeSubject { LearningOutcomeSubjectStatement = learningOutcomeSubjectString };
+                curriculumDatabaseContext.LearningOutcomeSubject.Add(learningOutcomeSubject);
+                await curriculumDatabaseContext.SaveChangesAsync();
+                return learningOutcomeSubject.IdlearningOutcomeSubject;
+            }
+            else
+            {
+                return learningSubject.IdlearningOutcomeSubject;
+            }
         }
 
         public async Task<LearningOutcomeSubject> GetLearningOutcomeSubjectById(int Idlearningoutcomesubject)

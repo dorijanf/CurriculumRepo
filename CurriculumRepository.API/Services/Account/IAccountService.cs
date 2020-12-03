@@ -8,9 +8,9 @@ namespace CurriculumRepository.API.Services.Account
     public interface IAccountService
     {
         Task<AuthenticationResponseDTO> Authenticate(AuthenticateUserDTO model);
-        Task<User> Create(RegisterUserBM model);
+        Task<int> Create(RegisterUserBM model);
         Task<UserDTO> GetUser(int id);
-        Task Update(UpdateUserBM model);
+        Task<int> Update(UpdateUserBM model);
         Task Delete(int id);
     }
 }

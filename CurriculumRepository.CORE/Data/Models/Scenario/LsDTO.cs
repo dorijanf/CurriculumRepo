@@ -1,5 +1,6 @@
 ﻿using CurriculumRepository.CORE.Data.Models.Activity;
 using CurriculumRepository.CORE.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace CurriculumRepository.CORE.Data.Models.Scenario
@@ -27,7 +28,7 @@ namespace CurriculumRepository.CORE.Data.Models.Scenario
         public string LearningOutcomeCts { get; set; }
         public List<Keyword> Keywords { get; set; }
         public List<TeachingSubject> CorrelationInterdisciplinaritySubjects { get; set; }
-        public int Lsduration { get; set; }
+        public TimeSpan Lsduration { get; set; }
         public List<StrategyMethod> StrategyMethods { get; set; }
         public List<Lacollaboration> CollaborationNames { get; set; }
         public List<TeachingAid> TeachingAids { get; set; }

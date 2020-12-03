@@ -1,7 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Linq.Dynamic.Core;
 
-namespace CurriculumRepository.CORE.Data.Validators.Account
+namespace CurriculumRepository.CORE.Data.Validators
 {
     public static class ValidationHelpers
     {
@@ -23,6 +24,19 @@ namespace CurriculumRepository.CORE.Data.Validators.Account
         public static bool ContainSpecial(string password)
         {
             return password.Any(ch => !char.IsLetterOrDigit(ch));
+        }
+
+        public static bool NotContainSpecial(string password)
+        {
+            return !password.Any(ch => !char.IsLetterOrDigit(ch));
+        }
+        public static bool GreaterThan1Minute(TimeSpan duration)
+        {
+            return duration.TotalMinutes >= 1;
+        }
+        public static bool LesserThan120Minutes(TimeSpan duration)
+        {
+            return duration.TotalMinutes <= 120;
         }
     }
 }

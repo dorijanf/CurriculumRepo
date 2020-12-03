@@ -1,5 +1,6 @@
 ﻿using CurriculumRepository.CORE.Data.Helpers;
 using CurriculumRepository.CORE.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace CurriculumRepository.API.Models.Entities
@@ -16,7 +17,7 @@ namespace CurriculumRepository.API.Models.Entities
         public int Idls { get; set; }
         public string Lsname { get; set; }
         public string Lsdescription { get; set; }
-        public int Lsduration { get; set; }
+        public TimeSpan Lsduration { get; set; }
         public string Lsacknowledgment { get; set; }
         public int UserId { get; set; }
         public int TeachingSubjectId { get; set; }

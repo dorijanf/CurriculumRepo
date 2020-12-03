@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CurriculumRepository.API.Models.Entities;
+using CurriculumRepository.CORE.Data.Models;
 using CurriculumRepository.CORE.Data.Models.Account;
 using CurriculumRepository.CORE.Data.Models.Activity;
 using CurriculumRepository.CORE.Data.Models.Scenario;
@@ -22,12 +23,31 @@ namespace CurriculumRepository.API.Helpers
 
             #region Scenario
             CreateMap<Ls, LsDTO>();
+            CreateMap<LsDTO, Ls>();
+            CreateMap<Ls, LsListDTO>();
+            CreateMap<LsListDTO, Ls>();
             CreateMap<Ls, LsBM>();
             CreateMap<LsBM, Ls>();
             #endregion
 
             #region Activity
             CreateMap<LaDTO, La>();
+            CreateMap<LaBM, La>();
+            CreateMap<La, LaBM>();
+            CreateMap<UpdateLaBM, La>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<La, UpdateLaBM>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            #endregion
+
+            #region TeachingAid
+            CreateMap<TeachingAid, TeachingAidBM>();
+            CreateMap<TeachingAidBM, TeachingAid>();
+            #endregion
+
+            #region StrategyMethod
+            CreateMap<StrategyMethod, StrategyMethodBM>();
+            CreateMap<StrategyMethodBM, StrategyMethod>();
             #endregion
         }
     }

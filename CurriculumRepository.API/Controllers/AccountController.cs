@@ -31,7 +31,7 @@ namespace CurriculumRepository.API.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterUserBM model)
         {
             var result = await accountService.Create(model);
-            return Ok(result);
+            return Ok(new { userId = result });
         }
 
         [Authorize(Roles = "administrator, korisnik")]
@@ -47,15 +47,15 @@ namespace CurriculumRepository.API.Controllers
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             await accountService.Delete(id);
-            return Ok();
+            return Ok($"User {id} successfully deleted.");
         }
 
         [Authorize(Roles = "administrator, korisnik")]
         [HttpPatch]
         public async Task<IActionResult> Update([FromBody] UpdateUserBM model)
         {
-            await accountService.Update(model);
-            return Ok();
+            var result = await accountService.Update(model);
+            return Ok($"User {result} successfully updated.");
         }
     }
 }

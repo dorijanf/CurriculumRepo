@@ -25,6 +25,20 @@ using CurriculumRepository.API.Repositories.LearningOutcomeCtRepository;
 using CurriculumRepository.API.Repositories.LearningOutcomeSubjectRepository;
 using CurriculumRepository.API.Repositories.LsCorrelationRepository;
 using CurriculumRepository.Models.Repositories.LsCorrelationRepository;
+using CurriculumRepository.API.Repositories.StrategyMethodRepository;
+using CurriculumRepository.API.Repositories.LaStrategyMethodRepository;
+using CurriculumRepository.API.Repositories.LaTeachingAidRepository;
+using CurriculumRepository.API.Repositories.TeachingAidRepository;
+using CurriculumRepository.API.Repositories.LsLaRepository;
+using CurriculumRepository.API.Repositories.TeachingSubjectRepository;
+using CurriculumRepository.API.Repositories.LaCollaborationRepository;
+using CurriculumRepository.API.Repositories.LaPerformanceRepository;
+using CurriculumRepository.API.Repositories.LaTypeRepository;
+using CurriculumRepository.API.Repositories.TeachingAidTypeRepository;
+using CurriculumRepository.API.Repositories.StrategyMethodTypeRepository;
+using CurriculumRepository.API.Services.SelectData;
+using CurriculumRepository.API.Helpers.Sort;
+using CurriculumRepository.API.Models.Entities;
 
 namespace CurriculumRepository
 {
@@ -59,7 +73,7 @@ namespace CurriculumRepository
               .AddNewtonsoftJson(opt => {
                   opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                   opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-              });
+            });
 
             // Swagger
             services.AddSwaggerGen(c =>
@@ -136,14 +150,27 @@ namespace CurriculumRepository
 
             // Controller services
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IScenarioService, ScenarioService>();
-            services.AddScoped<IActivityService, ActivityService>();
+            services.AddScoped<IScenariosService, ScenariosService>();
+            services.AddScoped<IActivitiesService, ActivitiesService>();
+            services.AddScoped<ISelectDataService, SelectDataService>();
 
             // Repositories
             services.AddScoped<IKeywordRepository, KeywordRepository>();
             services.AddScoped<ILearningOutcomeCtRepository, LearningOutcomeCtRepository>();
             services.AddScoped<ILearningOutcomeSubjectRepository, LearningOutcomeSubjectRepository>();
             services.AddScoped<ILsCorrelationInterdisciplinarityRepository, LsCorrelationInterdisciplinarityRepository>();
+            services.AddScoped<IStrategyMethodRepository, StrategyMethodRepository>();
+            services.AddScoped<ILaStrategyMethodRepository, LaStrategyMethodRepository>();
+            services.AddScoped<ILaTeachingAidRepository, LaTeachingAidRepository>();
+            services.AddScoped<ITeachingAidRepository, TeachingAidRepository>();
+            services.AddScoped<ILsLaRepository, LsLaRepository>();
+            services.AddScoped<ITeachingSubjectRepository, TeachingSubjectRepository>();
+            services.AddScoped<ILaCollaborationRepository, LaCollaborationRepository>();
+            services.AddScoped<ILaPerformanceRepository, LaPerformanceRepository>();
+            services.AddScoped<ILaTypeRepository, LaTypeRepository>();
+            services.AddScoped<ITeachingAidTypeRepository, TeachingAidTypeRepository>();
+            services.AddScoped<IStrategyMethodTypeRepository, StrategyMethodTypeRepository>();
+            services.AddScoped<ISort<Ls>, Sort<Ls>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
