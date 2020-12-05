@@ -82,7 +82,7 @@ namespace CurriculumRepository.API.Services.Account
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
                 Token = token.Result.Token,
-                Role = user.UserType.UserTypeName
+                userTypeId = user.UserTypeId
             };
         }
 

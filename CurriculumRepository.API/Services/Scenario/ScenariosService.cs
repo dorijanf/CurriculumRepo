@@ -138,12 +138,24 @@ namespace CurriculumRepository.API.Services.Scenario
             lsDTO.UserId = user.Iduser;
             lsDTO.Firstname = user.Firstname;
             lsDTO.Lastname = user.Lastname;
-            lsDTO.Keywords = context.Lskeyword.Where(x => x.Lsid == ls.Idls)
-                .Select(x => x.Keyword)
+            var keywords = context.Lskeyword.Where(x => x.Lsid == ls.Idls)
+                .Select(x => x.Keywordid)
                 .ToList();
-            lsDTO.CorrelationInterdisciplinaritySubjects = context.LscorrelationInterdisciplinarity.Where(x => x.Lsid == ls.Idls)
-                .Select(x => x.TeachingSubject)
+            foreach (var keyword in keywords)
+            {
+                var kwrd = await context.Keyword.FindAsync(keyword);
+                lsDTO.Keywords.Add(kwrd.KeywordName);
+            }
+
+
+             var correlations = context.LscorrelationInterdisciplinarity.Where(x => x.Lsid == ls.Idls)
+                .Select(x => x.TeachingSubjectId)
                 .ToList();
+            foreach (var correlation in correlations)
+            {
+                var corr = await context.TeachingSubject.FindAsync(correlation);
+                lsDTO.CorrelationInterdisciplinaritySubjects.Add(corr.TeachingSubjectName);
+            }
 
             // Add learningOutcomeCt
             var learningOutcomeCt = await context.LearningOutcomeCt.FindAsync(ls.LearningOutcomeCtid);
@@ -157,9 +169,7 @@ namespace CurriculumRepository.API.Services.Scenario
             // Strategy method, Collaboration and Teaching Aids from LA
             foreach (var la in lsDTO.Las)
             {
-                lsDTO.StrategyMethods.Add((StrategyMethod)la.LastrategyMethod.Select(x => x));
                 lsDTO.CollaborationNames.Add(la.Lacollaboration);
-                lsDTO.TeachingAids.Add((TeachingAid)la.LateachingAids.Select(x => x));
             }
             return lsDTO;
         }

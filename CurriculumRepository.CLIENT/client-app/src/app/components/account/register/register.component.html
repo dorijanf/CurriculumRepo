@@ -1,0 +1,62 @@
+<div class="col-md-6 offset-md-3 mt-5">
+    <div class="card">
+        <h4 class="card-header">Registracija</h4>
+        <div class="card-body">
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <div class="form-group">
+                    <div class="preview text-center">
+                        <img class="preview-img" src="http://simpleicon.com/wp-content/uploads/account.png" alt="Preview Image" width="200" height="200"/>
+                        <div class="browse-button">
+                            <i class="fa fa-pencil-alt"></i>
+                            <input class="browse-input" type="file" required name="UploadedFile" id="UploadedFile"/>
+                        </div>
+                        <span class="Error"></span>
+                    </div>
+                    <label for="Firstname">Ime</label>
+                    <input type="text" formControlName="Firstname" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && f.Firstname.errors }" />
+                    <div *ngIf="submitted && f.Firstname.errors" class="invalid-feedback">
+                        <div *ngIf="f.Firstname.errors.required">Unos imena je obavezan.</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Lastname">Prezime</label>
+                    <input type="text" formControlName="Lastname" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+                    <div *ngIf="submitted && f.Lastname.errors" class="invalid-feedback">
+                        <div *ngIf="f.Lastname.errors.required">Unos prezimena je obavezan.</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Username">Korisničko ime</label>
+                    <input type="text" formControlName="Username" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && f.Username.errors }" />
+                    <div *ngIf="submitted && f.Username.errors" class="invalid-feedback">
+                        <div *ngIf="f.Username.errors.required">Unos korisničkog imena je obavezno.</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Email">Email</label>
+                    <input type="email" formControlName="Email" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && f.Email.errors }" />
+                    <div *ngIf="submitted && f.Email.errors" class="invalid-feedback">
+                        <div *ngIf="f.Email.errors.required">Unos email adrese je obavezno.</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Password">Lozinka</label>
+                    <input type="password" formControlName="Password" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && f.Password.errors }" />
+                    <div *ngIf="submitted && f.Password.errors" class="invalid-feedback">
+                        <div *ngIf="f.Password.errors.required">Unos lozinke je obavezno.</div>
+                    </div>
+                </div>
+                <button [disabled]="loading" class="btn btn-primary">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    Registriraj se!
+                </button>
+                <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+            </form>
+        </div>
+    </div>
+</div>

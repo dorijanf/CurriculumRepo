@@ -39,6 +39,7 @@ using CurriculumRepository.API.Repositories.StrategyMethodTypeRepository;
 using CurriculumRepository.API.Services.SelectData;
 using CurriculumRepository.API.Helpers.Sort;
 using CurriculumRepository.API.Models.Entities;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace CurriculumRepository
 {
@@ -207,12 +208,12 @@ namespace CurriculumRepository
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "../ClientApp";
+                spa.Options.SourcePath = "../CurriculumRepository.CLIENT/client-app";
 
-                //if (env.IsDevelopment())
-                //{
-                //    spa.UseAngularCliServer(npmScript: "start");
-                //}
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
             });
         }
     }

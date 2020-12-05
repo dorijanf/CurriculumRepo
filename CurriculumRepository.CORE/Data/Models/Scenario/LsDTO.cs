@@ -9,10 +9,12 @@ namespace CurriculumRepository.CORE.Data.Models.Scenario
     {
         public LsDTO()
         {
-            Keywords = new List<Keyword>();
-            CorrelationInterdisciplinaritySubjects = new List<TeachingSubject>();
-            CollaborationNames = new List<Lacollaboration>();
-            TeachingAids = new List<TeachingAid>();
+            Keywords = new List<string>();
+            CorrelationInterdisciplinaritySubjects = new List<string>();
+            CollaborationNames = new List<string>();
+            TeachingAidUser = new List<TeachingAidBM>();
+            TeachingAidTeacher = new List<TeachingAidBM>();
+            StrategyMethods = new List<StrategyMethodBM>();
             Las = new List<LaDTO>();
         }
 
@@ -26,12 +28,13 @@ namespace CurriculumRepository.CORE.Data.Models.Scenario
         public int? Lsgrade { get; set; }
         public string LearningOutcomeSubjects { get; set; }
         public string LearningOutcomeCts { get; set; }
-        public List<Keyword> Keywords { get; set; }
-        public List<TeachingSubject> CorrelationInterdisciplinaritySubjects { get; set; }
+        public List<string> Keywords { get; set; }
+        public List<string> CorrelationInterdisciplinaritySubjects { get; set; }
         public TimeSpan Lsduration { get; set; }
-        public List<StrategyMethod> StrategyMethods { get; set; }
-        public List<Lacollaboration> CollaborationNames { get; set; }
-        public List<TeachingAid> TeachingAids { get; set; }
+        public List<StrategyMethodBM> StrategyMethods { get; set; }
+        public List<string> CollaborationNames { get; set; }
+        public List<TeachingAidBM> TeachingAidUser{ get; set; }
+        public List<TeachingAidBM> TeachingAidTeacher { get; set; }
         public List<LaDTO> Las { get; set; }
     }
 }

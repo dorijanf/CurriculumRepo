@@ -6,6 +6,7 @@ using CurriculumRepository.API.Repositories.LsLaRepository;
 using CurriculumRepository.API.Repositories.StrategyMethodRepository;
 using CurriculumRepository.API.Repositories.TeachingAidRepository;
 using CurriculumRepository.CORE.Data;
+using CurriculumRepository.CORE.Data.Models;
 using CurriculumRepository.CORE.Data.Models.Activity;
 using CurriculumRepository.CORE.Entities;
 using Microsoft.AspNetCore.Http;
@@ -75,6 +76,8 @@ namespace CurriculumRepository.API.Services.Activity
             }
 
             var la = mapper.Map<La>(model);
+            ls.Lsduration += la.Laduration;
+            context.Update(ls);
             await context.SaveChangesAsync();
             foreach (var strategyMethod in model.StrategyMethods)
             {
@@ -155,6 +158,12 @@ namespace CurriculumRepository.API.Services.Activity
                 throw new NotFoundException($"Scenario {scenarioId} does not exist.");
             }
 
+            la = mapper.Map<La>(model);
+            if(model.Laduration != null)
+            {
+                ls.Lsduration += model.Laduration;
+            }
+
             laStrategyMethodRepository.RemoveLaStrategyMethods(activityId);
             foreach (var strategyMethod in model.StrategyMethods)
             {
@@ -176,6 +185,9 @@ namespace CurriculumRepository.API.Services.Activity
             }
 
             logger.LogInformation($"Activity {la.Idla} successfully updated.");
+            context.Update(la);
+            context.Update(ls);
+            await context.SaveChangesAsync();
             return la.Idla;
         }
         
@@ -214,16 +226,32 @@ namespace CurriculumRepository.API.Services.Activity
             foreach (var la in lsla)
             {
                 var laDTO = mapper.Map<LaDTO>(la);
-                laDTO.Laperformance = await context.Laperformance.FirstOrDefaultAsync(x => x.Idperformance == la.PerformanceId);
-                laDTO.Latype = await context.Latype.FirstOrDefaultAsync(x => x.Idlatype == la.LatypeId);
+
+                var laPerformance = await context.Laperformance.FirstOrDefaultAsync(x => x.Idperformance == la.PerformanceId);
+                laDTO.Laperformance = laPerformance.PerformanceName;
+
+                var laType = await context.Latype.FirstOrDefaultAsync(x => x.Idlatype == la.LatypeId);
+                laDTO.Latype = laType.LatypeName;
+
+                var laCollaboration = await context.Lacollaboration.FirstOrDefaultAsync(x => x.Idcollaboration == la.CooperationId);
+                laDTO.Lacollaboration = laCollaboration.CollaborationName;
+
                 var strategyMethodIds = context.LastrategyMethod.Where(x => x.Laid == la.Idla)
                     .Select(x => x.IdlastrategyMethod);
                 foreach (var strategyMethodId in strategyMethodIds)
                 {
-                    laDTO.LastrategyMethod.Add(await context.StrategyMethod.FindAsync(strategyMethodId));
+                    var strategyMethod = await context.StrategyMethod.FirstOrDefaultAsync(x => x.IdstrategyMethod == strategyMethodId);
+                    laDTO.StrategyMethods.Add(mapper.Map<StrategyMethodBM>(strategyMethod));
                 }
-                laDTO.Lacollaboration = await context.Lacollaboration.FirstOrDefaultAsync(x => x.Idcollaboration == la.CooperationId);
-                laDTO.LateachingAids = context.LateachingAid.Where(x => x.Laid == la.Idla).ToList();
+
+                var teachingAidIds = context.LateachingAid.Where(x => x.Laid == la.Idla)
+                    .Select(x => x.IdlateachingAid);
+                foreach (var teachingAidId in teachingAidIds)
+                {
+                    var teachingAid = await context.TeachingAid.FirstOrDefaultAsync(x => x.IdteachingAid == teachingAidId);
+                    laDTO.TeachingAids.Add(mapper.Map<TeachingAidBM>(teachingAid));
+                }
+
                 laDTOs.Add(mapper.Map<LaDTO>(la));
             }
 
