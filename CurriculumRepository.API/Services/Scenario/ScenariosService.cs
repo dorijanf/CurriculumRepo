@@ -70,7 +70,7 @@ namespace CurriculumRepository.API.Services.Scenario
         public async Task<int> CreateScenario(LsBM model)
         {
             var ls = mapper.Map<Ls>(model);
-            ls.UserId = Int32.Parse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            ls.UserId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             ls.LearningOutcomeCtid = await learningOutcomeCtRepository.CreateLearningOutcomeCts(model.LearningOutcomeCts);
             ls.LearningOutcomeSubjectId = await learningOutcomeSubjectRepository.CreateLearningOutcomeSubject(model.LearningOutcomeSubjects);
             ls.Lsduration = TimeSpan.Zero;
@@ -125,25 +125,21 @@ namespace CurriculumRepository.API.Services.Scenario
                 logger.LogError($"Scenario with id { id } not found.");
                 throw new NotFoundException($"Learning scenario with id {id} not found.");
             }
-            if(ls.LstypeId == (int) LsTypeEnum.Private && ls.UserId.ToString() != httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value)
+            if(ls.LstypeId == (int) LsTypeEnum.Private && ls.UserId != httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value)
             {
                 logger.LogError($"Not authorized to update scenario { id }");
                 throw new NotAuthorizedException($"You are not authorized to view this resource.");
             }
 
             var lsDTO = mapper.Map<LsDTO>(ls);
-            var user = await context.User.FindAsync(ls.UserId);
 
             // Add user
-            lsDTO.UserId = user.Iduser;
-            lsDTO.Firstname = user.Firstname;
-            lsDTO.Lastname = user.Lastname;
+            lsDTO.UserId = ls.UserId;
             var keywords = context.Lskeyword.Where(x => x.Lsid == ls.Idls)
-                .Select(x => x.Keywordid)
                 .ToList();
             foreach (var keyword in keywords)
             {
-                var kwrd = await context.Keyword.FindAsync(keyword);
+                var kwrd = await context.Keyword.FindAsync(keyword.Keywordid);
                 lsDTO.Keywords.Add(kwrd.KeywordName);
             }
 
@@ -157,13 +153,20 @@ namespace CurriculumRepository.API.Services.Scenario
                 lsDTO.CorrelationInterdisciplinaritySubjects.Add(corr.TeachingSubjectName);
             }
 
+            var taName = await context.TeachingSubject.FindAsync(ls.TeachingSubjectId);
+            lsDTO.TeachingSubjectName = taName.TeachingSubjectName;
+
             // Add learningOutcomeCt
             var learningOutcomeCt = await context.LearningOutcomeCt.FindAsync(ls.LearningOutcomeCtid);
-            lsDTO.LearningOutcomeCts = learningOutcomeCt.LearningOutcomeCtstatement;
+            var learningOutcomeCts = learningOutcomeCt.LearningOutcomeCtstatement.Trim().Split("||");
+            learningOutcomeCts = learningOutcomeCts.Take(learningOutcomeCts.Count() - 1).ToArray();
+            lsDTO.LearningOutcomeCts = learningOutcomeCts;
 
             //Add learningOutcomeSubject
             var learningOutcomeSubject = await context.LearningOutcomeSubject.FindAsync(ls.LearningOutcomeSubjectId);
-            lsDTO.LearningOutcomeSubjects = learningOutcomeSubject.LearningOutcomeSubjectStatement;
+            var learningOutcomeSubjects = learningOutcomeSubject.LearningOutcomeSubjectStatement.Trim().Split("||");
+            learningOutcomeSubjects = learningOutcomeSubjects.Take(learningOutcomeSubjects.Count() - 1).ToArray();
+            lsDTO.LearningOutcomeSubjects = learningOutcomeSubjects;
             lsDTO.Las = await activityService.GetActivities(id);
 
             // Strategy method, Collaboration and Teaching Aids from LA
@@ -179,9 +182,18 @@ namespace CurriculumRepository.API.Services.Scenario
         /// </summary>
         /// <param name="id"></param>
         /// <returns>List of learning scenario data transfer objects for a user</returns>
-        public async Task<IEnumerable<LsDTO>> GetUserScenarios(int id)
+        public async Task<IEnumerable<LsDTO>> GetUserScenarios(string id)
         {
-            var userLs = await context.Ls.Where(x => x.UserId == id).ToListAsync();
+            var userLs = new List<Ls>();
+            if (id != httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value)
+            {
+                userLs = await context.Ls.Where(x => x.UserId == id && x.LstypeId != (int) LsTypeEnum.Private).ToListAsync();
+            }
+            else
+            {
+                userLs = await context.Ls.Where(x => x.UserId == id).ToListAsync();
+            }
+
             List<LsDTO> lsDTOs = new List<LsDTO>();
             foreach (var ls in userLs)
             {
@@ -217,28 +229,76 @@ namespace CurriculumRepository.API.Services.Scenario
             ls.LearningOutcomeSubjectId = await learningOutcomeSubjectRepository.CreateLearningOutcomeSubject(model.LearningOutcomeSubjects);
             context.Ls.Update(ls);
             await context.SaveChangesAsync();
-            keywordRepository.RemoveKeywords(model.Keywords, ls.Idls);
+            await keywordRepository.RemoveKeywords(model.Keywords, ls.Idls);
             await keywordRepository.CreateKeywords(model.Keywords, ls.Idls);
-            lsCorrelationRepository.RemoveLsCorr(ls.Idls);
+            await lsCorrelationRepository.RemoveLsCorr(ls.Idls);
             await lsCorrelationRepository.CreateTeachingCorrelationSubjects(model.CorrelationSubjectIds, ls.Idls);
             return id;
         }
 
         public async Task<PagedList<LsListDTO>> GetScenarios(ScenarioParameters scenarioParameters)
         {
-            var scenarios = context.Ls.AsQueryable();
-            scenarios = FilterScenarios(ref scenarios, scenarioParameters);
-            scenarios = SearchScenariosByKeyword(ref scenarios, scenarioParameters);
-            scenarios = SearchScenariosByName(ref scenarios, scenarioParameters);
-            scenarios = sortService.ApplySort(scenarios, scenarioParameters.OrderBy);
-            return await PagedList<LsListDTO>.ToPagedList(scenarios.Select(x => mapper.Map<LsListDTO>(x)),
-                scenarioParameters.PageNumber,
-                scenarioParameters.PageSize);
+            var scenarios = context.Ls.Where(x => x.LstypeId != (int) LsTypeEnum.Private).AsQueryable();
+            IQueryable<Ls> searchResults = Enumerable.Empty<Ls>().AsQueryable();
+            if (!string.IsNullOrWhiteSpace(scenarioParameters.Keyword))
+            {
+                searchResults = SearchScenariosByKeyword(scenarioParameters);
+            }
+            if (!string.IsNullOrWhiteSpace(scenarioParameters.Lsname))
+            {
+                searchResults = SearchScenariosByName(ref scenarios, scenarioParameters);
+            }
+
+            if (searchResults.Count() == 0)
+            {
+                scenarios = FilterScenarios(ref scenarios, scenarioParameters);
+
+                scenarios = sortService.ApplySort(scenarios, scenarioParameters.OrderBy);
+                return await PagedList<LsListDTO>.ToPagedList(scenarios.Select(x => mapper.Map<LsListDTO>(x)),
+                    scenarioParameters.PageNumber,
+                    scenarioParameters.PageSize);
+            }
+            else
+            {
+                searchResults = FilterScenarios(ref searchResults, scenarioParameters);
+
+                searchResults = sortService.ApplySort(searchResults, scenarioParameters.OrderBy);
+                return await PagedList<LsListDTO>.ToPagedList(searchResults.Select(x => mapper.Map<LsListDTO>(x)),
+                    scenarioParameters.PageNumber,
+                    scenarioParameters.PageSize);
+            }
         }
 
-        private IQueryable<Ls> SearchScenariosByKeyword(ref IQueryable<Ls> scenarios, ScenarioParameters scenarioParameters)
+        public async Task<int> GetScenariosCount(ScenarioParameters scenarioParameters)
         {
-            IQueryable<Ls> ls = null;
+            var scenarios = context.Ls.Where(x => x.LstypeId != (int)LsTypeEnum.Private).AsQueryable();
+            IQueryable<Ls> searchResults = Enumerable.Empty<Ls>().AsQueryable();
+            if (!string.IsNullOrWhiteSpace(scenarioParameters.Keyword))
+            {
+                searchResults = SearchScenariosByKeyword(scenarioParameters);
+            }
+            if (!string.IsNullOrWhiteSpace(scenarioParameters.Lsname))
+            {
+                searchResults = SearchScenariosByName(ref scenarios, scenarioParameters);
+            }
+
+            if (searchResults.Count() == 0)
+            {
+                scenarios = FilterScenarios(ref scenarios, scenarioParameters);
+                var result = await scenarios.ToListAsync();
+                return result.Count();
+            }
+            else
+            {
+                searchResults = FilterScenarios(ref searchResults, scenarioParameters);
+                var result = await searchResults.ToListAsync();
+                return result.Count();
+            }
+        }
+
+        private IQueryable<Ls> SearchScenariosByKeyword(ScenarioParameters scenarioParameters)
+        {
+            IQueryable<Ls> ls = Enumerable.Empty<Ls>().AsQueryable();
             if (!string.IsNullOrWhiteSpace(scenarioParameters.Keyword.Trim()))
             {
                 var keyword = keywordRepository.GetKeyword(scenarioParameters.Keyword);
@@ -248,6 +308,7 @@ namespace CurriculumRepository.API.Services.Scenario
                         .Select(x => x.Lsid)
                         .Select(x => context.Ls.Find(x))
                         .Select(x => x);
+                    ls = ls.Where(x => x.LstypeId != (int)LsTypeEnum.Private);
                 }
             }
             return ls;
@@ -257,7 +318,7 @@ namespace CurriculumRepository.API.Services.Scenario
         {
             if (!string.IsNullOrWhiteSpace(scenarioParameters.Lsname))
             {
-                scenarios = context.Ls.Where(x => x.Lsname == scenarioParameters.Lsname);
+                scenarios = scenarios.Where(x => x.Lsname.ToLower().Trim().Contains(scenarioParameters.Lsname.ToLower().Trim()) );
             }
             return scenarios;
         }
@@ -266,12 +327,12 @@ namespace CurriculumRepository.API.Services.Scenario
         {
             if (scenarioParameters.Lsgrade >= 1 && scenarioParameters.Lsgrade <= 8)
             {
-                scenarios = context.Ls.Where(x => x.Lsgrade == scenarioParameters.Lsgrade);
+                scenarios = scenarios.Where(x => x.Lsgrade == scenarioParameters.Lsgrade);
             }
 
             if(scenarioParameters.TeachingSubjectId != 0)
             {
-                scenarios = context.Ls.Where(x => x.TeachingSubjectId == scenarioParameters.TeachingSubjectId);
+                scenarios = scenarios.Where(x => x.TeachingSubjectId == scenarioParameters.TeachingSubjectId);
             }
 
             return scenarios;

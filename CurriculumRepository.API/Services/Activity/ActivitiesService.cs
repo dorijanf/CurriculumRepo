@@ -164,14 +164,14 @@ namespace CurriculumRepository.API.Services.Activity
                 ls.Lsduration += model.Laduration;
             }
 
-            laStrategyMethodRepository.RemoveLaStrategyMethods(activityId);
+            await laStrategyMethodRepository.RemoveLaStrategyMethods(activityId);
             foreach (var strategyMethod in model.StrategyMethods)
             {
                 var strategyMethodId = await strategyMethodRepository.CreateStrategyMethod(strategyMethod);
                 await laStrategyMethodRepository.CreateLaStrategyMethod(la.Idla, strategyMethodId);
             }
 
-            laTeachingAidRepository.RemoveLaTeachingAids(activityId);
+            await laTeachingAidRepository.RemoveLaTeachingAids(activityId);
             foreach (var teachingAid in model.LaTeachingAidUser)
             {
                 var taId = await teachingAidRepository.CreateTeachingAid(teachingAid);

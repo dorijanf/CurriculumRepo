@@ -32,7 +32,8 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/bootstrap/scss/bootstrap.scss"
+              "node_modules/bootstrap/scss/bootstrap.scss",
+              "node_modules/@ng-select/ng-select/themes/default.theme.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -62,8 +63,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "6kb",
+                  "maximumError": "6kb"
                 }
               ]
             }
@@ -99,7 +100,8 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/bootstrap/scss/bootstrap.scss"
+              "node_modules/bootstrap/scss/bootstrap.scss",
+              "node_modules/@ng-select/ng-select/themes/default.theme.css" 
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

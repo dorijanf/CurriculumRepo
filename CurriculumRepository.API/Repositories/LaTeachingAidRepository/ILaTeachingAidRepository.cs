@@ -8,6 +8,6 @@ namespace CurriculumRepository.API.Repositories.LaTeachingAidRepository
     {
         Task<IEnumerable<TeachingAid>> GetTeachingAidsByLaId(int laid);
         Task CreateLaTeachingAid(int laId, int teachingAidId, bool? teachingAidUser);
-        void RemoveLaTeachingAids(int id);
+        Task RemoveLaTeachingAids(int id);
     }
 }

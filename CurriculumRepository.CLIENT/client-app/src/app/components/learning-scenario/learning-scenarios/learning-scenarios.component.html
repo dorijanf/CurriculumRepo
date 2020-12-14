@@ -1,1 +1,78 @@
-<p>learning-scenarios works!</p>
+<h1>Scenariji</h1>
+<ng-container *ngIf="(scenarios$ | async) as scenarios; else loading">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <form [formGroup]="resultsForm">
+                    <div class="form-row">
+                        <span class="text-center">Prikaži</span>
+                        <ng-select appearance="outline" [clearable]="false" formControlName="scenarios"
+                            (change)="setNumberOfResults()">
+                            <ng-option *ngFor="let scenario of scenariosPerPageResults" [value]="scenario">
+                                {{scenario}}
+                            </ng-option>
+                        </ng-select>
+                        <span class="text-center">scenarija</span>
+                        <ng-select appearance="outline" [clearable]="false" formControlName="teachingSubjects"
+                            (change)="setTeachingSubject()">
+                            <ng-option [value]="''">Svi predmeti</ng-option>
+                            <ng-option *ngFor="let teachingSubject of teachingSubjects"
+                                [value]="teachingSubject['idteachingSubject']">
+                                <span
+                                    [style.color]="getBackgroundColor(teachingSubject['idteachingSubject'])">{{teachingSubject['teachingSubjectName']}}</span>
+                            </ng-option>
+                        </ng-select>
+                        <span class="text-center">Sortiraj:</span>
+                        <ng-select appearance="outline" [clearable]="false" formControlName="orderBy"
+                            (change)="setOrderBy()">
+                            <ng-option [value]="'lsName'">Uzlazno</ng-option>
+                            <ng-option [value]="'lsName desc'">Silazno</ng-option>
+                        </ng-select>
+                    </div>
+                </form>
+            </div>
+            <div class="col justify-content-center">
+                <form (ngSubmit)="setSearchText()" [formGroup]="searchForm">
+                    <div class="form-row">
+                        <input type="text" formControlName="search" class="form-control"
+                            placeholder="Preatraži po nazivu ili ključnoj riječi">
+                        <button type="submit" class="btn btn-primary btn-submit">Pretraži</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container cards">
+        <div class="row row-cols-1 row-cols-sm-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-3">
+            <div *ngFor="let scenario of scenarios">
+                <div class="col mb-4">
+                    <div class="card text-center">
+                        <div [style.background-color]="getBackgroundColor(scenario['teachingSubjectId'])"
+                            class="card-header">
+                            <h5 class="card-title text-truncate">{{scenario['lsname']}}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text ctext">{{scenario['lsdescription']}}</p>
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-view" [routerLink]="[scenario['idls']]">Pogledaj scenarij</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <ul class="pagination justify-content-center">
+            <li *ngFor="let page of pageField;let i=index" class="page-item">
+                <a (click)="showScenariosByPageNumber(page,i)"
+                    [ngClass]="pageNumber[i] ? 'page-link-active':'page-link'"
+                    style=" margin-right: 5px; margin-top: 5px;">{{page}}</a>
+            </li>
+        </ul>
+        <div class="text-center">
+            Page {{ pageNo }} of {{ paginationService.exactPageList }} Pages
+        </div><br />
+    </div>
+</ng-container>
+<ng-template #loading>Učitavam...</ng-template>

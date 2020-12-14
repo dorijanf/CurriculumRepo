@@ -1,4 +1,5 @@
-﻿using CurriculumRepository.CORE.Entities;
+﻿using CurriculumRepository.API.Models.Entities;
+using CurriculumRepository.CORE.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

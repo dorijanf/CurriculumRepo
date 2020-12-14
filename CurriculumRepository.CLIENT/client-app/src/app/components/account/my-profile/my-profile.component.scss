@@ -12,6 +12,11 @@
 .profile-head h6{
     color:#f35b3f;;
 }
+
+.profile-head {
+    margin-top: 70px;
+}
+
 .profile-edit-btn{
     border: none;
     border-radius: 1.5rem;
@@ -93,5 +98,13 @@
 }
 
 fa-icon {
+    color: #f35b3f;
+}
+
+.table {
+    margin-bottom: 35px !important;
+}
+
+a {
     color: #f35b3f;
 }

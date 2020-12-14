@@ -9,7 +9,7 @@ namespace CurriculumRepository.CORE.Data.Models.Scenario
         public int Idls { get; set; }
         public string Lsname { get; set; }
         public string Lsdescription { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public int TeachingSubjectId { get; set; }
         public int? Lsgrade { get; set; }
     }

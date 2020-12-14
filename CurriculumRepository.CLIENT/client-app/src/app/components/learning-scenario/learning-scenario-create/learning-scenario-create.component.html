@@ -1,1 +1,215 @@
-<p>learning-scenario-create works!</p>
+<h1>Izrada scenarija</h1>
+<!-- Top content -->
+<div class="top-content">
+    <div class="row">
+        <div class="col-sm-12 col-sm-offset-1 col-md-12 col-md-offset-2 col-lg-12 col-lg-offset-3 form-box">
+            <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" method="post" class="f1">
+                <!-- Form Legend-->
+                <h3>Scenarij</h3>
+                <p class="desc">Unesite podatke o scenariju</p>
+                <div class="f1-steps">
+                    <div class="f1-progress">
+                        <div class="f1-progress-line" data-now-value="16.66" data-number-of-steps="3"
+                            style="width: 14%;"></div>
+                    </div>
+                    <div class="f1-step active">
+                        <div class="f1-step-icon">
+                            <fa-icon [icon]="faInfo"></fa-icon>
+                        </div>
+                        <p>opće informacije</p>
+                    </div>
+                    <div class="f1-step">
+                        <div class="f1-step-icon">
+                            <fa-icon [icon]="faGraduationCap"></fa-icon>
+                        </div>
+                        <p>ishodi učenja</p>
+                    </div>
+                    <div class="f1-step">
+                        <div class="f1-step-icon">
+                            <fa-icon [icon]="faLink"></fa-icon>
+                        </div>
+                        <p>korelacija</p>
+                    </div>
+                </div>
+                <!-- Form Legend End-->
+                <!-- Formset Start -->
+                <fieldset>
+                    <h4>Opće informacije</h4>
+                    <div class="form-group">
+                        <label for="Lsname">Naziv scenarija</label>
+                        <input type="text" name="Lsname" placeholder="Unesite naziv scenarija"
+                            [(ngModel)]="model.Lsname" class="f1-scenario-name form-control" #Lsname="ngModel"
+                            id="f1-scenario-name" [ngClass]="{ 'is-invalid' : submitted && Lsname.invalid }"
+                            maxLength="50" minLength="3" required pattern="^[a-zA-Z0-9._-šđčć,ž ]+$">
+                        <div *ngIf="submitted && Lsname.invalid" class="invalid-feedback">
+                            <div *ngIf="Lsname.errors.required">Unos imena scenarija je obavezan</div>
+                            <div *ngIf="Lsname.errors.pattern">Ime ne smije sadržavati posebne znakove</div>
+                            <div *ngIf="Lsname.errors.maxLength">Ime smije imati maksimalno 50 znakova</div>
+                            <div *ngIf="Lsname.errors.minlength">Ime mora imati barem 3 znaka</div>
+                        </div>
+                    </div>
+                    <!-- Form Group End -->
+                    <!-- Form Group -->
+                    <div class="form-group">
+                        <label for="Lsdescription">Kratak opis</label>
+                        <textarea name="Lsdescription" placeholder="Unesite kratak opis scenarija"
+                            [(ngModel)]="model.Lsdescription" class="f1-scenario-description form-control"
+                            #Lsdescription="ngModel" id="f1-ls-description"
+                            [ngClass]="{ 'is-invalid' : submitted && Lsdescription.invalid }" required minLength="10"
+                            maxLength="800"></textarea>
+                        <div *ngIf="submitted && Lsdescription.invalid" class="invalid-feedback">
+                            <div *ngIf="Lsdescription.errors.required">Unesite kratak opis scenarija</div>
+                            <div *ngIf="Lsdescription.errors.minLength">Kratak opis mora sadržavati barem 10 znakova
+                            </div>
+                            <div *ngIf="Lsdescription.errors.maxLength">Opis ne može sadržavati više od 800 znakova
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Form Group End -->
+                    <!-- Form Group -->
+                    <div class="form-group">
+                        <label for="Lstype">Tip scenarija</label><br />
+                        <label class="form-check-inline"><input name="Lstype" [(ngModel)]="model.LsTypeId"
+                                class="form-check-input" #Lstype="ngModel" [value]="2" type="radio" checked="true">
+                            Javni
+                        </label>
+                        <label class="form-check-inline"><input name="Lstype" [(ngModel)]="model.LsTypeId"
+                                class="form-check-input" #Lstype="ngModel" [value]="1" type="radio">
+                            Privatni
+                        </label>
+                    </div>
+                    <!-- Form Group End -->
+                    <!-- Form Group -->
+                    <div class="form-group">
+                        <label for="TeachingSubjectId">Nastavni predmet</label><br />
+                        <select (blur)="validateTeachingSubject(TeachingSubjectId.value)"
+                            (change)="validateTeachingSubject(TeachingSubjectId.value)" name="TeachingSubjectId"
+                            [(ngModel)]="model.TeachingSubjectId" class="lsubjects form-control"
+                            #TeachingSubjectId="ngModel" style="width:50%"
+                            [ngClass]="{ 'is-invalid' : submitted && teachingSubjectHasError }">
+                            <option [ngValue]="0">Odaberi nastavni predmet</option>
+                            <option *ngFor="let teachingSubject of teachingSubjects"
+                                [ngValue]="teachingSubject['idteachingSubject']">
+                                {{teachingSubject['teachingSubjectName']}}</option>
+                        </select>
+                        <div *ngIf="submitted && teachingSubjectHasError" class="invalid-feedback">
+                            <div *ngIf="teachingSubjectHasError">Odaberite nastavni predmet</div>
+                        </div>
+                    </div>
+                    <!-- Form Group End -->
+                    <!-- Form Group -->
+                    <div class="form-group">
+                        <label for="LsGrade">Razred</label><br />
+                        <select (blur)="validateLsGrade(LsGrade.value)" (change)="validateLsGrade(LsGrade.value)"
+                            name="LsGrade" [(ngModel)]="model.Lsgrade" class="lsgrades form-control" #LsGrade="ngModel"
+                            style="width:50%" [ngClass]="{ 'is-invalid' : submitted && lsGradeHasError }">
+                            <option [ngValue]="0">Odaberi razred</option>
+                            <option *ngFor="let grade of grades" [ngValue]="grade">{{grade}}</option>
+                        </select>
+                        <div *ngIf="submitted && lsGradeHasError" class="invalid-feedback">
+                            <div *ngIf="lsGradeHasError">Odaberite razred</div>
+                        </div>
+                    </div>
+                    <!-- Form Group End -->
+                    <!-- Navigation Buttons -->
+                    <div class="f1-buttons">
+                        <button type="button" class="btn btn-next" (click)="onNext()">Sljedeća</button>
+                    </div>
+                </fieldset>
+                <!-- Fieldset End -->
+                <!-- Fieldset Start -->
+                <fieldset>
+                    <h4>Ishodi učenja</h4>
+                    <div id="learningoutcomesubjects" class="form-group">
+                        <label for="LearningOutcomeSubjects">Ishodi učenja vezani uz opće predmete</label>
+                        <div *ngFor="let learningOutcomeSubject of model.LearningOutcomeSubjects; let index = index;">
+                            <div class="input-group-append">
+                                <div class="up-down-buttons">
+                                    <button *ngIf="index != 0" type="button" class="up"
+                                        (click)="moveUpLoSubject(index)">
+                                        <fa-icon [icon]="faAngleUp"></fa-icon>
+                                    </button>
+                                    <button *ngIf="index != model.LearningOutcomeSubjects.length - 1" type="button"
+                                        class="down" (click)="moveDownLoSubject(index)">
+                                        <fa-icon [icon]="faAngleDown"></fa-icon>
+                                    </button>
+                                </div>
+                                <input type="text" name="LearningOutcomeSubjects{{index}}"
+                                    placeholder="Unesite ishod učenja" class="form-control"
+                                    id="LearningOutcomeSubject{{index}}"
+                                    [(ngModel)]="model.LearningOutcomeSubjects[index].value"
+                                    #LearningOutcomeSubjects="ngModel" required>
+                                <div *ngIf="index > 0">
+                                    <button type="button" class="btnRemove" (click)="removeLoSubject(index)">
+                                        <fa-icon [icon]="faTimes"></fa-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="btnAdd" type="button" (click)="addLoSubject()">
+                            <fa-icon [icon]="faPlus"></fa-icon>
+                        </button>
+                    </div>
+                    <div id="learningoutcomects" class="form-group">
+                        <label for="LearningOutcomeCts">Ishodi učenja vezani uz računalno razmišljanje</label>
+                        <div *ngFor="let learningOutcomeCt of model.LearningOutcomeCts; let index = index;">
+                            <div class="input-group-append">
+                                <div class="up-down-buttons">
+                                    <button *ngIf="index != 0" type="button" class="up" (click)="moveUpLoCt(index)">
+                                        <fa-icon [icon]="faAngleUp"></fa-icon>
+                                    </button>
+                                    <button *ngIf="index != model.LearningOutcomeCts.length - 1" type="button"
+                                        class="down" (click)="moveDownLoCt(index)">
+                                        <fa-icon [icon]="faAngleDown"></fa-icon>
+                                    </button>
+                                </div>
+                                <input type="text" name="LearningOutcomeCts{{index}}" placeholder="Unesite ishod učenja"
+                                    class="form-control" id="LearningOutcomeCt{{index}}"
+                                    [(ngModel)]="model.LearningOutcomeCts[index].value" #LearningOutcomeCts="ngModel"
+                                    required>
+                                <div *ngIf="index > 0">
+                                    <button type="button" class="btnRemove" (click)="removeLoCt(index)">
+                                        <fa-icon [icon]="faTimes"></fa-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="btnAdd2" type="button" (click)="addLoCt()">
+                            <fa-icon [icon]="faPlus"></fa-icon>
+                        </button>
+                    </div>
+                    <!-- Navigation Buttons -->
+                    <div class="f1-buttons">
+                        <button type="button" class="btn btn-previous">Prethodna</button>
+                        <button type="button" class="btn btn-next">Sljedeća</button>
+                    </div>
+                </fieldset>
+                <!-- Fieldset End -->
+                <!-- Fieldset Start -->
+                <fieldset>
+                    <h4>Ključni pojmovi i interdisciplinarnost</h4>
+                    <label for="Keywords">Ključni pojmovi</label><br />
+                    <ng-select name="Keywords" [(ngModel)]="model.Keywords" [multiple]="true" [addTag]="true">
+                        <ng-option *ngFor="let keyword of keywords" [value]="keyword['keywordName']">
+                            {{keyword['keywordName']}}
+                        </ng-option>
+                    </ng-select>
+                    <br />
+                    <label>Interdisciplinarnost</label><br />
+                    <ng-select name="TeachingSubjects" [(ngModel)]="model.CorrelationSubjectIds" [multiple]="true">
+                        <ng-option *ngFor="let teachingSubject of teachingSubjects"
+                            [value]="teachingSubject['idteachingSubject']">
+                            {{teachingSubject['teachingSubjectName']}}
+                        </ng-option>
+                    </ng-select>
+                    <!-- Navigation Buttons -->
+                    <div class="f1-buttons">
+                        <button type="button" class="btn btn-previous">Prethodna</button>
+                        <button type="submit" id="btn-submit" class="btn btn-submit">Kreiraj scenarij</button>
+                    </div>
+                </fieldset>
+                <!-- Fieldset End -->
+            </form>
+        </div>
+    </div>
+</div>

@@ -14,7 +14,7 @@ namespace CurriculumRepository.CORE.Data.Validators.Scenario
                 .WithMessage("Name can not have special characters.");
             RuleFor(x => x.Lsname).MinimumLength(3)
                 .WithMessage("Scenario name must be at least 3 characters long.");
-            RuleFor(x => x.Lsname).MaximumLength(14)
+            RuleFor(x => x.Lsname).MaximumLength(50)
                 .WithMessage("Scenario name must be at least 14 characters long.");
             RuleFor(x => x.Lsdescription).MaximumLength(800)
                 .WithMessage("Scenario description can have a maximum of 400 characters.");

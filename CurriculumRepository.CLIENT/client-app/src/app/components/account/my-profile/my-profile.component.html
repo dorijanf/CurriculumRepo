@@ -1,83 +1,101 @@
 <div class="wrapper">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="preview text-center">
-                <img class="preview-img" src="http://simpleicon.com/wp-content/uploads/account.png" alt="Preview Image"
-                    width="200" height="200" />
+    <ng-container *ngIf="(userInfo$ | async) as user; else loading">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="preview text-center">
+                    <img class="preview-img" src="http://simpleicon.com/wp-content/uploads/account.png"
+                        alt="Preview Image" width="200" height="200" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="profile-head">
+                    <h5>
+                        {{ user['firstname'] }} {{ user['lastname'] }}<a [routerLink]="['profile/edit/', user['id']]"
+                            role="button">
+                            <fa-icon [icon]="faEdit"></fa-icon>
+                        </a>
+                    </h5>
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                                aria-controls="home" aria-selected="true">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                aria-controls="profile" aria-selected="false">Scenariji učenja</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="profile-head">
-                <h5>
-                    Dorijan Fabijanić <a href="/" role="button"><fa-icon [icon]="faEdit"></fa-icon></a>
-                </h5>
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
-                            aria-controls="home" aria-selected="true">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                            aria-controls="profile" aria-selected="false">Scenariji učenja</a>
-                    </li>
-                </ul>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-work">
+                    <p>SCENARIJI UČENJA</p>
+                    <a href="">Scenariji učenja</a><br />
+                    <p>AKTIVNOSTI</p>
+                    <a href="">Aktivnosti</a><br />
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="profile-work">
-                <p>SCENARIJI UČENJA</p>
-                <a href="">Scenariji učenja</a><br />
-                <p>AKTIVNOSTI</p>
-                <a href="">Aktivnosti</a><br />
-            </div>
-        </div>
-        <div class="col-md-8">
-            <div class="tab-content profile-tab" id="myTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>User Id</label>
+            <div class="col-md-8">
+                <div class="tab-content profile-tab" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>User Id</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{user['id']}}</p>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <p>24</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ user['email'] }}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Name</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Uloga</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ user['usertypeid'] == 1 ? "Administrator" : "Korisnik"}}</p>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <p>Dorijan Fabijanić</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Email</label>
-                        </div>
-                        <div class="col-md-6">
-                            <p>dfabijanic@uniri.hr</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Datum registracije</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ user['registrationDate'] | date:'medium'}}</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Uloga</label>
-                        </div>
-                        <div class="col-md-6">
-                            <p>Korisnik</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Datum registracije</label>
-                        </div>
-                        <div class="col-md-6">
-                            <p>03.12.2020</p>
-                        </div>
+                    <div class="tab-pane fade show" id="profile" role="tabpanel" aria-labelledby="home-tab">
+                        <table class="table table-striped table-condensed" *ngIf="(scenarios$ | async) as scenarios else loading">
+                            <thead>
+                                <tr>
+                                    <th>Ime</th>
+                                    <th>Opis</th>
+                                    <th>Vrijeme trajanja</th>
+                                    <th>Razred</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let scenario of scenarios">
+                                    <td><a [routerLink]="['/scenarios', scenario['idls']]">{{scenario['lsname']}}</a></td>
+                                    <td>{{scenario['lsdescription']}}</td>
+                                    <td>{{scenario['lsduration']}}</td>
+                                    <td>{{scenario['lsgrade']}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </ng-container>
 </div>
+<ng-template #loading>Učitavam...</ng-template>

@@ -1,10 +1,10 @@
 import { TimeSpan } from 'src/app/helpers/timespan';
 import { LaDTO } from '../activity/LaDTO';
-import { StrategyMethodBM } from '../StrategyMethodBM';
-import { TeachingAidBM } from '../TeachingAidBM';
+import { StrategyMethod } from '../StrategyMethod';
+import { TeachingAid } from '../TeachingAid';
 
 export class LsDTO {
-    UserId: number;
+    UserId: string;
     Firstname: string;
     Lastname: string;
     Lsname: string;
@@ -16,8 +16,8 @@ export class LsDTO {
     LearningOutcomeCts: string;
     CorrelationInterdisciplinaritySubjects: string[];
     Lsduration: TimeSpan;
-    StrategyMethods: StrategyMethodBM[];
+    StrategyMethods: StrategyMethod[];
     CollaborationNames: string[];
-    TeachingAids: TeachingAidBM[];
+    TeachingAids: TeachingAid[];
     Las: LaDTO[];
 }

@@ -9,7 +9,7 @@ import { LoginComponent } from './components/account/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RegisterComponent } from './components/account/register/register.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ActivitiesService } from './services/activities.service';
 import { DataService } from './services/data.service';
@@ -26,6 +26,11 @@ import { LearningActivityCreateComponent } from './components/learning-activity/
 import { EditProfileComponent } from './components/account/edit-profile/edit-profile.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HomeComponent } from './components/home/home.component';
+import { HttpErrorInterceptor } from 'src/http-error.interceptor';
+import { JwtInterceptor } from './helpers/jwt.interceptor';
+import { MustMatchDirective } from './helpers/must-match.directive';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { PaginationService } from './services/pagination.service';
 
 @NgModule({
   declarations: [
@@ -43,6 +48,7 @@ import { HomeComponent } from './components/home/home.component';
     LearningActivityCreateComponent,
     EditProfileComponent,
     HomeComponent,
+    MustMatchDirective
   ],
   imports: [
     FormsModule,
@@ -53,13 +59,25 @@ import { HomeComponent } from './components/home/home.component';
     BrowserAnimationsModule,
     HttpClientModule,
     NgbModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    NgSelectModule
   ],
   providers: [
     AccountService,
     ActivitiesService,
     DataService,
     ScenariosService,
+    PaginationService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })

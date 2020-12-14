@@ -1,6 +1,6 @@
 import { TimeSpan } from 'src/app/helpers/timespan';
-import { StrategyMethodBM } from '../StrategyMethodBM';
-import { TeachingAidBM } from '../TeachingAidBM';
+import { StrategyMethod } from '../StrategyMethod';
+import { TeachingAid } from '../TeachingAid';
 
 export class UpdateLaBM {
     OrdinalNumber: number; 
@@ -9,8 +9,8 @@ export class UpdateLaBM {
     DigitalTechnology: boolean; 
     Laduration: TimeSpan;
     Ladescription: string; 
-    StrategyMethods: StrategyMethodBM[]; 
+    StrategyMethods: StrategyMethod[]; 
     CooperationId: number;
-    LaTeachingAidUser: TeachingAidBM[];
-    LaTeachingAidTeacher: TeachingAidBM[];
+    LaTeachingAidUser: TeachingAid[];
+    LaTeachingAidTeacher: TeachingAid[];
 }

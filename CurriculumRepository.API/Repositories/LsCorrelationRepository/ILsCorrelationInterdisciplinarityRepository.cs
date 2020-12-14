@@ -8,6 +8,6 @@ namespace CurriculumRepository.Models.Repositories.LsCorrelationRepository
     {
         Task CreateTeachingCorrelationSubjects(List<int> subjectIds, int lsId);
         IEnumerable<LscorrelationInterdisciplinarity> GetLsCorrByLsId(int lsid);
-        void RemoveLsCorr(int lsId);
+        Task RemoveLsCorr(int lsId);
     }
 }

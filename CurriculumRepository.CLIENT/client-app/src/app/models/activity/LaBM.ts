@@ -1,5 +1,5 @@
 import { TimeSpan } from 'src/app/helpers/timespan';
-import { TeachingAidBM } from '../TeachingAidBM';
+import { TeachingAid } from '../TeachingAid';
 
 export class LaBM {
     OrdinalNumber: number;
@@ -8,9 +8,10 @@ export class LaBM {
     DigitalTechnology: boolean;
     Laname: string;
     Laduration: TimeSpan;
+    LadurationMinute: number;
     Ladescription: string;
     StrategyMethods: string;
     CooperationId: number;
-    LaTeachingAidUser: TeachingAidBM[];
-    LaTeachingAidTeacher: TeachingAidBM[];
+    LaTeachingAidUser: TeachingAid[];
+    LaTeachingAidTeacher: TeachingAid[];
 }

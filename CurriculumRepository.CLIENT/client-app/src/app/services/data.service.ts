@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
@@ -21,8 +22,8 @@ export class DataService {
         return this.http.get(this.appUrl + this.apiUrl + 'teaching-subjects');
     }
 
-    getTeachingAids() {
-        return this.http.get(this.appUrl + this.apiUrl + 'teaching-aids');
+    getTeachingAids() : Observable<any[]> {
+        return this.http.get<any[]>(this.appUrl + this.apiUrl + 'teaching-aids');
     }
 
     getTeachingAidTypes() {

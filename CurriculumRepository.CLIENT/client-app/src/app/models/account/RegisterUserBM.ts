@@ -4,5 +4,6 @@ export class RegisterUserBM {
     Username: string;
     Email: string;
     Password: string;
+    ConfirmPassword: string;
     ProfilePicture: null;
 }

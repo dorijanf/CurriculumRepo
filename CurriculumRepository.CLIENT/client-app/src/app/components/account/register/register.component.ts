@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AccountService } from 'src/app/services/account.service';
 import { RegisterUserBM } from 'src/app/models/account/RegisterUserBM';
+import { ResponseDTO } from 'src/app/models/ResponseDTO';
 
 @Component({
   selector: 'app-register',
@@ -11,15 +12,14 @@ import { RegisterUserBM } from 'src/app/models/account/RegisterUserBM';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
-  registerForm: FormGroup;
+  model: RegisterUserBM = new RegisterUserBM();
   loading = false;
   submitted = false;
   returnUrl: string;
-  error = '';
+  error: string;
   title: string = "Register";
 
   constructor(
-    private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private accountService: AccountService
@@ -27,47 +27,20 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.registerForm = this.formBuilder.group({
-      Firstname: ['', Validators.required],
-      Lastname: ['', Validators.required],
-      Username: ['', Validators.required,
-                     Validators.minLength(5),
-                     Validators.maxLength(14)],
-      Email: ['', Validators.required],
-      Password: ['', Validators.required],
-      RepeatPassword: ['', Validators.required],
-      ProfilePicture: [null]
-    });
-
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
-
-  get f() { return this.registerForm.controls; }
 
   onSubmit() {
     this.submitted = true;
 
-    if (this.registerForm.invalid) {
-      return;
-    }
-
-    this.f.username.value, this.f.email.value, this.f.password.value
-    let registerUser = <RegisterUserBM>{
-      Firstname: this.f.Firstname.value,
-      Lastname: this.f.Lastname.value,
-      Username: this.f.Username.value,
-      Email: this.f.Email.value,
-      Password: this.f.Password.value,
-      ProfilePicture: this.f.ProfilePicture.value
-    };
     this.loading = true;
-    this.accountService.register(registerUser)
+    this.accountService.register(this.model)
       .pipe(first())
       .subscribe(
         data => {
           this.router.navigate(['/login']);
         },
-        (error: any) => {
+        (error: string) => {
           this.error = error;
           this.loading = false;
         });

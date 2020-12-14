@@ -52,7 +52,13 @@ h4 {
     margin-bottom: 50px;
 }
 
-.btn {
+.btn-primary {
     background-color: #f35b3f;
     border-color: black;
+}
+
+.btn-secondary {
+    background-color: lightslategray;
+    border-color: #f35b3f;
+    margin-left:20px;
 }

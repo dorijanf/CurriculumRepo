@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { AuthenticationResponseDTO } from 'src/app/models/account/AuthenticationResponseDTO';
 import { AccountService } from 'src/app/services/account.service';
 import { UserTypeEnum } from 'src/enums/user-type-enum';
@@ -11,23 +13,36 @@ import { UserTypeEnum } from 'src/enums/user-type-enum';
   styleUrls: ['./navbar.component.scss']
 })
 
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnChanges {
   IsAdmin: UserTypeEnum.Administrator;
   currentUser: AuthenticationResponseDTO;
-  currentUserId: number;
   navbarOpen = false;
   constructor(public authenticationService: AccountService, private router: Router) {
-    this.authenticationService.currentUser.subscribe(x => x = x);
-    if(this.currentUser != undefined || this.currentUser != null){
-      this.currentUserId = this.currentUser.Iduser;
-    }
-    console.log(this.currentUser);
+  }
+  ngOnChanges(): void {
+    this.setValue();
   }
   ngOnInit(): void {
+    this.setValue();
   }
 
   toggleNavbar() {
     this.navbarOpen = !this.navbarOpen;
+  }
+
+  setValue() {
+    if(this.authenticationService.isLoggedIn){
+      this.authenticationService.currentUser.pipe(
+        tap(user => {
+          if (user) {
+            this.currentUser = user;
+          } else {
+            this.currentUser = null;
+          }
+        })
+      )
+      .subscribe()
+    }
   }
 
   logout() {

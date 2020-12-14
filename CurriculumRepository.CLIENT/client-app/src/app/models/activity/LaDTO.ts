@@ -1,8 +1,7 @@
 import { Byte } from '@angular/compiler/src/util';
 import { TimeSpan } from 'src/app/helpers/timespan';
-import { Lacollaboration } from '../Lacollaboration';
-import { StrategyMethodBM } from '../StrategyMethodBM';
-import { TeachingAidBM } from '../TeachingAidBM';
+import { StrategyMethod } from '../StrategyMethod';
+import { TeachingAid } from '../TeachingAid';
 
 export class LaDTO {
     Idla: number;
@@ -13,9 +12,9 @@ export class LaDTO {
     Laname: string;
     Laduration: TimeSpan;
     Ladescription: string;
-    LastrategyMethod: StrategyMethodBM[];
+    LastrategyMethod: StrategyMethod[];
     Lacollaboration: string;
     Lagrade: Byte;
-    LateachingAids: TeachingAidBM[];
+    LateachingAids: TeachingAid[];
     Laacknowledgment: string;
 }

@@ -40,11 +40,11 @@ namespace CurriculumRepository.API.Repositories.LsCorrelationRepository
             return lscorr;
         }
 
-        public void RemoveLsCorr(int lsId)
+        public async Task RemoveLsCorr(int lsId)
         {
             var lsCorr = context.LscorrelationInterdisciplinarity.Where(x => x.Lsid == lsId);
             context.RemoveRange(lsCorr);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

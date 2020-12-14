@@ -1,0 +1,101 @@
+/***** Bootstrap cards *****/
+
+.card {
+  width: 18rem;
+  border-color: #888;
+  border: 1px solid #ddd;
+  font-family: 'Roboto', sans-serif;
+  margin-left: 23px;
+}
+
+.card-title {
+  color: #000;
+}
+
+h5 {
+  font-size: 16px;
+}
+
+p {
+  font-size: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+a {
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.card-body {
+  height: 140px;
+}
+
+h1,
+h2 {
+  margin-top: 10px;
+  font-size: 38px;
+  font-weight: 100;
+  color: #555;
+  line-height: 50px;
+  text-align: center;
+}
+
+h3 {
+  font-size: 22px;
+  font-weight: 300;
+  color: #555;
+  line-height: 30px;
+  text-align: center;
+}
+
+h4 {
+  font-size: 18px;
+  font-weight: 300;
+  color: #555;
+  line-height: 26px;
+}
+
+.page-link-active {
+  position: relative;
+  display: block;
+  padding: .5rem .75rem;
+  margin-left: -1px;
+  line-height: 1.25;
+  color: #fff;
+  background-color: #f35b3f;
+  border: 1px solid #dee2e6;
+  cursor: pointer;
+}
+
+.page-link {
+  cursor: pointer;
+}
+
+.form-row {
+  height: 100px;
+  line-height: 100px;
+  align-items: center;
+}
+
+.form-control[type="text"] {
+  width: 80%;
+  float: left;
+}
+
+.btn-submit {
+  width: 20%;
+  float: right;
+}
+
+ng-select {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.cards {
+  margin-top: 5%;
+}

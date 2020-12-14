@@ -1,5 +1,5 @@
 export class AuthenticationResponseDTO {
-    Iduser: number;
+    Id: string;
     Firstname: string;
     Lastname: string;
     Token: string;

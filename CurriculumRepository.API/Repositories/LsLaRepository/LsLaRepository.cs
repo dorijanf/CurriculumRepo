@@ -55,7 +55,7 @@ namespace CurriculumRepository.API.Repositories.LsLaRepository
         {
             var lsLa = await context.Lsla.FirstOrDefaultAsync(x => x.Laid == activityId && x.Lsid == scenarioId);
             context.Lsla.Remove(lsLa);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

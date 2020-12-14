@@ -8,6 +8,6 @@ namespace CurriculumRepository.API.Repositories.LaStrategyMethodRepository
     {
         Task CreateLaStrategyMethod(int laId, int strategyMethodId);
         Task<IEnumerable<StrategyMethod>> GetLaStrategyMethodByLaId(int lsid);
-        void RemoveLaStrategyMethods(int laId);
+        Task RemoveLaStrategyMethods(int laId);
     }
 }

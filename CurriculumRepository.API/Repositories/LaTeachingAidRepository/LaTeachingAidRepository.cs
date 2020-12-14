@@ -39,11 +39,11 @@ namespace CurriculumRepository.API.Repositories.LaTeachingAidRepository
             return teachingAids;
         }
 
-        public void RemoveLaTeachingAids(int id)
+        public async Task RemoveLaTeachingAids(int id)
         {
             var laTeachingAids = context.LateachingAid.Where(x => x.IdlateachingAid == id);
             context.RemoveRange(laTeachingAids);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

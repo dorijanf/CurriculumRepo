@@ -1,1 +1,95 @@
-<p>learning-scenario works!</p>
+<div class="wrapper">
+    <ng-container *ngIf="(model$ | async) as ls else loading">
+        <h2>{{ls['lsname']}}
+            <a [routerLink]="['']" role="button">
+                <fa-icon [icon]="faEdit"></fa-icon>
+            </a>
+        </h2>
+        <ng-container *ngIf="(user$ | async) as user else loading">
+            <p id="scenario-user"><a [routerLink]="['/profile/', ls['userId']]">{{user['firstname']}}
+                    {{user['lastname']}}</a></p>
+        </ng-container>
+        <p>{{ls['lsdescription']}}</p>
+        <hr class="divider">
+        <div class="row">
+            <div class="col scenario-grade-subject text-center">
+                <h4>Predmet: </h4>
+                <p>{{ls['teachingSubjectName']}}</p>
+            </div>
+            <div class="col scenario-grade-subject text-center">
+                <h4>Razred: </h4>
+                <p>{{ls['lsgrade']}}</p>
+            </div>
+            <div class="col scenario-grade-subject text-center">
+                <h4>Trajanje: </h4>
+                <p>{{ls['lsduration']}}</p>
+            </div>
+        </div>
+        <hr class="divider" />
+        <h4 class="scenario-label">Ishodi učenja vezani za opće predmete:</h4>
+        <ul *ngFor="let loSubject of ls['learningOutcomeSubjects']" class="scenario-outcomes">
+            <li class="outcome-highlited">
+                {{loSubject}}
+            </li>
+        </ul>
+        <h4 class="scenario-label">Ishodi učenja vezani za računalno razmišljanje:</h4>
+        <ul *ngFor="let loCt of ls['learningOutcomeCts']" class="scenario-outcomes">
+            <li class="outcome-highlited">
+                {{loCt}}
+            </li>
+        </ul>
+        <hr class="divider" />
+        <div class="col scenario-grade-subject text-left">
+            <h4 class="scenario-label">Ključne riječi:</h4>
+            <p *ngFor="let keyword of ls['keywords']">
+                <span class="span-list">{{keyword}}</span>
+            </p>
+        </div>
+        <div class="col scenario-grade-subject text-left">
+            <h4 class="scenario-label">Interdisciplinarnost:</h4>
+            <p *ngFor="let tS of ls['correlationInterdisciplinaritySubjects']">
+                <span class="span-list">{{tS}}</span>
+            </p>
+        </div>
+        <hr class="divider" />
+        <h4 class="scenario-label">Strategije i metode učenja i poučavanja</h4>
+        <ul *ngFor="let strategyMethod of ls['strategyMethods']">
+            <li class="outcome-highlited">
+                {{strategyMethod}}
+            </li>
+        </ul>
+        <hr class="divider" />
+        <h4 class="scenario-label">Razine suradnje</h4>
+        <ul *ngFor="let collaboration of ls['collaborationNames']">
+            <li class="outcome-highlited">
+                {{collaboration}}
+            </li>
+        </ul>
+        <hr class="divider" />
+        <div class="row">
+            <div class="col">
+                <h4 class="scenario-label">Materijali za nastavnike</h4>
+                <ul *ngFor="let teachingAidTeacher of ls['teachingAidTeacher']">
+                    <li class="outcome-highlited">
+                        {{teachingAidTeacher}}
+                    </li>
+                </ul>
+            </div>
+            <div class="col">
+                <h4 class="scenario-label">Materijali za učenike</h4>
+                <ul *ngFor="let teachingAidUser of ls['teachingAidUser']">
+                    <li class="outcome-highlited">
+                        {{teachingAidUser}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <hr class="divider" />
+        <h4 class="scenario-label">Aktivnosti
+            <a [routerLink]="['/scenarios',scenarioId,'create-activity']" role="button">
+                <fa-icon *ngIf="currentUser['id'] === ls['userId']"[icon]="faPlusCircle"></fa-icon>
+            </a>
+        </h4>
+    </ng-container>
+</div>
+<ng-template #loading>Učitavam...</ng-template>

@@ -1,18 +1,19 @@
 ﻿using CurriculumRepository.API.Models.Entities;
+using CurriculumRepository.CORE.Data.Helpers;
 using CurriculumRepository.CORE.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CurriculumRepository.CORE.Data
 {
-    public partial class CurriculumDatabaseContext : DbContext
+    public partial class CurriculumDatabaseContext : IdentityDbContext<User, UserType, string>
     {
-        public CurriculumDatabaseContext()
-        {
-        }
-
-        public CurriculumDatabaseContext(DbContextOptions<CurriculumDatabaseContext> options)
+        public CurriculumDatabaseContext(DbContextOptions<CurriculumDatabaseContext> options) 
             : base(options)
         {
         }
@@ -36,8 +37,6 @@ namespace CurriculumRepository.CORE.Data
         public virtual DbSet<TeachingAid> TeachingAid { get; set; }
         public virtual DbSet<TeachingAidType> TeachingAidType { get; set; }
         public virtual DbSet<TeachingSubject> TeachingSubject { get; set; }
-        public virtual DbSet<User> User { get; set; }
-        public virtual DbSet<UserType> UserType { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -48,6 +47,8 @@ namespace CurriculumRepository.CORE.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Keyword>(entity =>
             {
                 entity.HasKey(e => e.Idkeyword)
@@ -505,54 +506,6 @@ namespace CurriculumRepository.CORE.Data
                     .HasMaxLength(50);
             });
 
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(e => e.Iduser)
-                    .HasName("PK_Korisnik");
-
-                entity.Property(e => e.Iduser).HasColumnName("IDUser");
-
-                entity.Property(e => e.Email)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Firstname)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Lastname)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.ProfilePicture).HasColumnType("image");
-
-                entity.Property(e => e.RegistrationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.UserTypeId).HasColumnName("UserTypeID");
-
-                entity.Property(e => e.Username)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                entity.HasOne(d => d.UserType)
-                    .WithMany(p => p.User)
-                    .HasForeignKey(d => d.UserTypeId)
-                    .HasConstraintName("FK_User_UserType");
-
-                entity.Property(e => e.IsDeleted).HasColumnName("IsDeleted");
-            });
-
-            modelBuilder.Entity<UserType>(entity =>
-            {
-                entity.HasKey(e => e.IduserType);
-
-                entity.Property(e => e.IduserType).HasColumnName("IDUserType");
-
-                entity.Property(e => e.UserTypeName)
-                    .IsRequired()
-                    .HasMaxLength(20);
-            });
-
             OnModelCreatingPartial(modelBuilder);
         }
 
@@ -566,17 +519,17 @@ namespace CurriculumRepository.CORE.Data
 
         private void UpdateSoftDeleteStatuses()
         {
-            foreach (var entry in ChangeTracker.Entries())
+            ChangeTracker.DetectChanges();
+
+            var markedAsDeleted = ChangeTracker.Entries().
+                Where(x => x.State == EntityState.Deleted);
+
+            foreach (var item in markedAsDeleted)
             {
-                switch (entry.State)
+                if (item.Entity is IDeletable entity)
                 {
-                    case EntityState.Added:
-                        entry.CurrentValues["IsDeleted"] = false;
-                        break;
-                    case EntityState.Deleted:
-                        entry.State = EntityState.Modified;
-                        entry.CurrentValues["IsDeleted"] = true;
-                        break;
+                    item.State = EntityState.Unchanged;
+                    entity.IsDeleted = true;
                 }
             }
         }

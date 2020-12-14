@@ -25,10 +25,13 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@ng-bootstrap/ng-bootstrap": "^8.0.0",
+    "@ng-select/ng-select": "^5.0.9",
     "angular-font-awesome": "^3.1.2",
     "bootstrap": "^4.5.3",
     "font-awesome": "^4.7.0",
     "jquery": "^3.5.1",
+    "jsonwebtoken": "^8.5.1",
+    "jw-angular-pagination": "^1.2.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

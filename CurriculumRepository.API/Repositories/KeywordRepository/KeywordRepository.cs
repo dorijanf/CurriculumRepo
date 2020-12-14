@@ -44,9 +44,9 @@ namespace CurriculumRepository.API.Repositories.KeywordRepository
 
         private async Task CreateLsKeyword(int keywordId, int lsId)
         {
-            var lsKeywordExists = context.Lskeyword.Where(x => x.Keywordid == keywordId && x.Lsid == lsId);
+            var lsKeywordExists = context.Lskeyword.FirstOrDefault(x => x.Keywordid == keywordId && x.Lsid == lsId);
 
-            if (lsKeywordExists != null)
+            if (lsKeywordExists == null)
             {
                 var lsKeyword = new Lskeyword
                 {
@@ -58,11 +58,11 @@ namespace CurriculumRepository.API.Repositories.KeywordRepository
             }
         }
 
-        public void RemoveKeywords(List<string> keywords, int lsId)
+        public async Task RemoveKeywords(List<string> keywords, int lsId)
         {
             var lsKeywords = context.Lskeyword.Where(x => x.Idlskeyword == lsId);
             context.RemoveRange(lsKeywords);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public Keyword GetKeyword(string name)

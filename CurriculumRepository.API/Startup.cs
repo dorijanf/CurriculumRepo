@@ -16,7 +16,6 @@ using AutoMapper;
 using Newtonsoft.Json;
 using CurriculumRepository.CORE.Data.Models.Account;
 using CurriculumRepository.CORE.Data.Validators.Account;
-using CurriculumRepository.API.Services.Account;
 using CurriculumRepository.API.Services.Scenario;
 using CurriculumRepository.API.Services.Activity;
 using CurriculumRepository.CORE.Data;
@@ -40,6 +39,9 @@ using CurriculumRepository.API.Services.SelectData;
 using CurriculumRepository.API.Helpers.Sort;
 using CurriculumRepository.API.Models.Entities;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using CurriculumRepository.API.Extensions.Exceptions;
+using CurriculumRepository.CORE.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace CurriculumRepository
 {
@@ -106,14 +108,52 @@ namespace CurriculumRepository
                   });
             });
 
-            // Http Context Accessor
-            services.AddHttpContextAccessor();
-
             // SPA
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "../ClientApp/dist";
             });
+
+            // Auto mapper
+            services.AddAutoMapper(typeof(Startup));
+
+            // Database Context
+            services.AddDbContext<CurriculumDatabaseContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("CurriculumDatabase")));
+
+            // Validation services
+            services.AddTransient<IValidator<AuthenticateUserDTO>, AuthenticateUserDTOValidator>();
+            services.AddTransient<IValidator<RegisterUserBM>, RegisterUserBMValidator>();
+            services.AddTransient<IValidator<UpdateUserBM>, UpdateUserBMValidator>();
+
+            // Controller services
+            services.AddScoped<IScenariosService, ScenariosService>();
+            services.AddScoped<IActivitiesService, ActivitiesService>();
+            services.AddScoped<ISelectDataService, SelectDataService>();
+
+            // Repositories
+            services.AddScoped<IKeywordRepository, KeywordRepository>();
+            services.AddScoped<ILearningOutcomeCtRepository, LearningOutcomeCtRepository>();
+            services.AddScoped<ILearningOutcomeSubjectRepository, LearningOutcomeSubjectRepository>();
+            services.AddScoped<ILsCorrelationInterdisciplinarityRepository, LsCorrelationInterdisciplinarityRepository>();
+            services.AddScoped<IStrategyMethodRepository, StrategyMethodRepository>();
+            services.AddScoped<ILaStrategyMethodRepository, LaStrategyMethodRepository>();
+            services.AddScoped<ILaTeachingAidRepository, LaTeachingAidRepository>();
+            services.AddScoped<ITeachingAidRepository, TeachingAidRepository>();
+            services.AddScoped<ILsLaRepository, LsLaRepository>();
+            services.AddScoped<ITeachingSubjectRepository, TeachingSubjectRepository>();
+            services.AddScoped<ILaCollaborationRepository, LaCollaborationRepository>();
+            services.AddScoped<ILaPerformanceRepository, LaPerformanceRepository>();
+            services.AddScoped<ILaTypeRepository, LaTypeRepository>();
+            services.AddScoped<ITeachingAidTypeRepository, TeachingAidTypeRepository>();
+            services.AddScoped<IStrategyMethodTypeRepository, StrategyMethodTypeRepository>();
+            services.AddScoped<ISort<Ls>, Sort<Ls>>();
+
+            // Identity
+            services.AddIdentity<User, UserType>()
+                .AddEntityFrameworkStores<CurriculumDatabaseContext>();
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<UserResolverService>();
 
             // JWT settings
             var jwtSettings = new JwtSettings();
@@ -137,41 +177,6 @@ namespace CurriculumRepository
                     ValidateAudience = false,
                 };
             });
-            // Auto mapper
-            services.AddAutoMapper(typeof(Startup));
-
-            // Database Context
-            services.AddDbContext<CurriculumDatabaseContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("CurriculumDatabase")));
-
-            // Validation services
-            services.AddTransient<IValidator<AuthenticateUserDTO>, AuthenticateUserDTOValidator>();
-            services.AddTransient<IValidator<RegisterUserBM>, RegisterUserBMValidator>();
-            services.AddTransient<IValidator<UpdateUserBM>, UpdateUserBMValidator>();
-
-            // Controller services
-            services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IScenariosService, ScenariosService>();
-            services.AddScoped<IActivitiesService, ActivitiesService>();
-            services.AddScoped<ISelectDataService, SelectDataService>();
-
-            // Repositories
-            services.AddScoped<IKeywordRepository, KeywordRepository>();
-            services.AddScoped<ILearningOutcomeCtRepository, LearningOutcomeCtRepository>();
-            services.AddScoped<ILearningOutcomeSubjectRepository, LearningOutcomeSubjectRepository>();
-            services.AddScoped<ILsCorrelationInterdisciplinarityRepository, LsCorrelationInterdisciplinarityRepository>();
-            services.AddScoped<IStrategyMethodRepository, StrategyMethodRepository>();
-            services.AddScoped<ILaStrategyMethodRepository, LaStrategyMethodRepository>();
-            services.AddScoped<ILaTeachingAidRepository, LaTeachingAidRepository>();
-            services.AddScoped<ITeachingAidRepository, TeachingAidRepository>();
-            services.AddScoped<ILsLaRepository, LsLaRepository>();
-            services.AddScoped<ITeachingSubjectRepository, TeachingSubjectRepository>();
-            services.AddScoped<ILaCollaborationRepository, LaCollaborationRepository>();
-            services.AddScoped<ILaPerformanceRepository, LaPerformanceRepository>();
-            services.AddScoped<ILaTypeRepository, LaTypeRepository>();
-            services.AddScoped<ITeachingAidTypeRepository, TeachingAidTypeRepository>();
-            services.AddScoped<IStrategyMethodTypeRepository, StrategyMethodTypeRepository>();
-            services.AddScoped<ISort<Ls>, Sort<Ls>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -180,7 +185,10 @@ namespace CurriculumRepository
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseMiddleware(typeof(ExceptionMiddleware));
             }
+
+            app.UseMiddleware(typeof(ExceptionMiddleware));
 
             app.UseCors("CorsPolicy");
 
@@ -191,6 +199,7 @@ namespace CurriculumRepository
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test API V1");
+                app.UseMiddleware(typeof(ExceptionMiddleware));
             });
 
             app.UseHttpsRedirection();

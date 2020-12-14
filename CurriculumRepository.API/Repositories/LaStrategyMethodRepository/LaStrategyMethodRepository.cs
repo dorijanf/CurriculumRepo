@@ -38,11 +38,11 @@ namespace CurriculumRepository.API.Repositories.LaStrategyMethodRepository
             return strategyMethods;
         }
 
-        public void RemoveLaStrategyMethods(int laId)
+        public async Task RemoveLaStrategyMethods(int laId)
         {
             var laStrategyMethods = context.LastrategyMethod.Where(x => x.Laid == laId);
             context.RemoveRange(laStrategyMethods);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

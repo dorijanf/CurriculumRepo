@@ -37,6 +37,14 @@ namespace CurriculumRepository.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "korisnik")]
+        [HttpGet("count")]
+        public async Task<IActionResult> GetScenariosCount([FromQuery] ScenarioParameters scenarioParameters)
+        {
+            var result = await scenariosService.GetScenariosCount(scenarioParameters);
+            return Ok(new { scenariosCount = result });
+        }
+
         [Authorize(Roles = "administrator, korisnik")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetScenario([FromRoute] int id)
@@ -71,7 +79,7 @@ namespace CurriculumRepository.API.Controllers
 
         [Authorize(Roles = "administrator, korisnik")]
         [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetUserScenarios([FromRoute] int userId)
+        public async Task<IActionResult> GetUserScenarios([FromRoute] string userId)
         {
             var result = await scenariosService.GetUserScenarios(userId);
             return Ok(result);

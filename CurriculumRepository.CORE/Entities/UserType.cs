@@ -1,17 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace CurriculumRepository.CORE.Entities
 {
-    public partial class UserType
+    public class UserType : IdentityRole
     {
-        public UserType()
-        {
-            User = new HashSet<User>();
-        }
 
-        public int IduserType { get; set; }
-        public string UserTypeName { get; set; }
-
-        public virtual ICollection<User> User { get; set; }
     }
 }

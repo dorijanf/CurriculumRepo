@@ -11,6 +11,7 @@ namespace CurriculumRepository.CORE.Data.Models.Activity
         public bool DigitalTechnology { get; set; }
         public string Laname { get; set; }
         public TimeSpan Laduration { get; set; }
+        public int LadurationMinute { get; set; }
         public string Ladescription { get; set; }
         public List<StrategyMethodBM> StrategyMethods { get; set; }
         public int CooperationId { get; set; }

@@ -1,0 +1,73 @@
+h1,
+h2 {
+  margin-top: 10px;
+  font-size: 38px;
+  font-weight: 100;
+  color: #555;
+  line-height: 50px;
+}
+
+h3 {
+  font-size: 22px;
+  font-weight: 300;
+  color: #555;
+  line-height: 30px;
+}
+
+h4 {
+  font-size: 18px;
+  font-weight: 300;
+  color: #555;
+  line-height: 26px;
+}
+
+/***** Details page *****/
+
+.scenario-label {
+  text-align: left;
+}
+
+.scenario-grade-subject h4,
+.scenario-grade-subject p {
+  display: inline;
+  vertical-align: top;
+}
+
+#scenario-user {
+  color: #999;
+}
+
+.divider {
+  border: 1px solid #f35b3f;
+}
+
+.span-list {
+  background-color: #F8F8F8;
+  margin-left: 15px;
+}
+
+.outcome-highlited {
+  background: #F8F8F8;
+}
+
+.scenario-outcomes {
+  list-style: none;
+  text-align: left;
+}
+
+.scenario-outcomes li::before {
+  content: "\2022";
+  color: #f35b3f;
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+fa-icon {
+  color: #f35b3f;
+}
+
+.container {
+  margin-bottom: 25px !important;
+}

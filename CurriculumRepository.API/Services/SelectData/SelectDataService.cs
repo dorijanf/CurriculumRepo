@@ -1,4 +1,5 @@
-﻿using CurriculumRepository.API.Repositories.KeywordRepository;
+﻿using CurriculumRepository.API.Models.Entities;
+using CurriculumRepository.API.Repositories.KeywordRepository;
 using CurriculumRepository.API.Repositories.LaCollaborationRepository;
 using CurriculumRepository.API.Repositories.LaPerformanceRepository;
 using CurriculumRepository.API.Repositories.LaTypeRepository;

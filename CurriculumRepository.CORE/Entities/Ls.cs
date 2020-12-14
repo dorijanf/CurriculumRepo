@@ -19,7 +19,7 @@ namespace CurriculumRepository.API.Models.Entities
         public string Lsdescription { get; set; }
         public TimeSpan Lsduration { get; set; }
         public string Lsacknowledgment { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public int TeachingSubjectId { get; set; }
         public int LstypeId { get; set; }
         public int LearningOutcomeSubjectId { get; set; }

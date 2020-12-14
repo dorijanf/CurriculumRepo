@@ -12,7 +12,6 @@ import { AuthenticationResponseDTO } from '../models/account/AuthenticationRespo
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   private currentUserSubject: BehaviorSubject<AuthenticationResponseDTO>;
-  public currentUser: Observable<AuthenticationResponseDTO>;
   appUrl: string;
   apiUrl: string;
   httpOptions = {
@@ -22,7 +21,6 @@ export class AccountService {
   };
   constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<AuthenticationResponseDTO>(JSON.parse(localStorage.getItem('currentUser')));
-    this.currentUser = this.currentUserSubject.asObservable();
     this.appUrl = environment.host;
     this.apiUrl = 'api/Account/'
   }
@@ -31,29 +29,37 @@ export class AccountService {
     return this.currentUserSubject.value;
   }
 
-  authenticate(model: AuthenticateUserDTO) : Observable<AuthenticationResponseDTO>{
-      return this.http.post<AuthenticationResponseDTO>(this.appUrl + this.apiUrl + 'authenticate', model)
-        .pipe(map(user => {
-          localStorage.setItem('currentUser', JSON.stringify(user))
-          this.currentUserSubject.next(user);
-          return user;
-        }))
+  public get currentUser(): Observable<AuthenticationResponseDTO> {
+    return this.currentUserSubject.asObservable();
+  }
+
+  public isLoggedIn() {
+    return this.currentUserSubject.subscribe() !== null || this.currentUserSubject.subscribe !== undefined ? true : false;
+  }
+
+  authenticate(model: AuthenticateUserDTO): Observable<AuthenticationResponseDTO> {
+    return this.http.post<AuthenticationResponseDTO>(this.appUrl + this.apiUrl + 'authenticate', model)
+      .pipe(map(user => {
+        localStorage.setItem('currentUser', JSON.stringify(user))
+        this.currentUserSubject.next(user);
+        return user;
+      }))
   }
 
   register(model: RegisterUserBM) {
-      return this.http.post(this.appUrl + this.apiUrl + 'register', model);
+    return this.http.post(this.appUrl + this.apiUrl + 'register', model);
   }
 
-  get(id: number) : Observable<UserDTO>{
-      return this.http.get<UserDTO>(this.appUrl + this.apiUrl + id);
+  getUser(id: string): Observable<UserDTO> {
+    return this.http.get<UserDTO>(this.appUrl + this.apiUrl + id);
   }
 
-  delete(id: number) {
-      return this.http.delete(this.appUrl + this.apiUrl + id);
+  delete(id: string) {
+    return this.http.delete(this.appUrl + this.apiUrl + id);
   }
 
   update(model: UpdateUserBM) {
-      return this.http.patch(this.appUrl + this.apiUrl, model);
+    return this.http.patch(this.appUrl + this.apiUrl, model);
   }
 
   logout() {
