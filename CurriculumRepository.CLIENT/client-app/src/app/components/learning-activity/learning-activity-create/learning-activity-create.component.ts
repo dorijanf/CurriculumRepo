@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faInfo, faListAlt, faWrench } from '@fortawesome/free-solid-svg-icons';
 import { first } from 'rxjs/operators';
 import { LaBM } from 'src/app/models/activity/LaBM';
+import { StrategyMethodBM } from 'src/app/models/StrategyMethodBM';
 import { AccountService } from 'src/app/services/account.service';
 import { ActivitiesService } from 'src/app/services/activities.service';
 import { DataService } from 'src/app/services/data.service';
@@ -43,6 +44,7 @@ export class LearningActivityCreateComponent implements OnInit {
   grades: number[] = [];
   ordinalNumbers: number[] = [];
   scenarioId: number;
+  activityId: number;
 
 
   constructor(private dataService: DataService,
@@ -55,32 +57,115 @@ export class LearningActivityCreateComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.scenarioId = params['scenarioId'];
+      this.activityId = params['activityId'];
     })
     this.scenariosService.getScenario(this.scenarioId).subscribe(scenario => {
       if (scenario['userId'] !== this.accountService.currentUserValue['id']) {
         this.router.navigate(['404']);
       }
     })
+
     this.getDropdowns();
     this.jqueryFunctions();
+
+    if (this.activityId !== null && this.activityId !== undefined) {
+      this.activitiesService.getActivity(this.scenarioId, this.activityId).subscribe(model => {
+        this.model.CooperationId = model['cooperationId'];
+        this.model.DigitalTechnology = model['digitalTechnology'];
+        this.model.LaTeachingAidTeacher = model['laTeachingAidTeacher'].map((lateachingaid) => {
+          return {
+            label: lateachingaid['teachingAidName'],
+            value: lateachingaid
+          }
+        })
+        this.model.LaTeachingAidUser = model['laTeachingAidUser'].map((lateachingaid) => {
+          return {
+            label: lateachingaid['teachingAidName'],
+            value: lateachingaid
+          }
+        })
+        this.model.PerformanceId = model['performanceId'];
+        this.model.StrategyMethods = model['strategyMethods'].map((strategyMethod) => {
+          return {
+            label: strategyMethod['strategyMethodName'],
+            value: strategyMethod
+          }
+        });
+        this.model.LadurationMinute = model['LadurationMinute'];
+        this.model.OrdinalNumber = model['ordinalNumber'];
+        this.model.LatypeId = model['latypeId'];
+        this.model.LadurationMinute = model['ladurationMinute'];
+        this.model.Laname = model['laname'];
+        this.model.Ladescription = model['ladescription'];
+        setTimeout(() => {
+
+        })
+      })
+    }
+    else {
+      this.getDropdowns();
+      this.jqueryFunctions();
+    }
   }
 
   onSubmit() {
     this.submitted = true;
     this.loading = true;
 
-    console.log(this.model);
-    this.activitiesService.create(this.scenarioId, this.model)
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.router.navigate(['/activities/', data['activityId']]);
-        },
-        (error: string) => {
-          this.error = error;
-          this.loading = false;
+    if (this.activityId !== null && this.activityId !== undefined) {
+      let strategies: any = [];
+      let tats: any[] = [];
+      let taus: any[] = [];
+      this.model.StrategyMethods.forEach(strategy => {
+        if (strategy['value'] !== undefined) {
+          strategies.push(strategy['value']);
+        } else {
+          strategies.push(strategy);
         }
-      )
+      })
+      this.model.LaTeachingAidTeacher.forEach(tat => {
+        if (tat['value'] !== undefined) {
+          tats.push(tat['value']);
+        } else {
+          tats.push(tat);
+        }
+      })
+      this.model.LaTeachingAidUser.forEach(tau => {
+        if (tau['value'] !== undefined) {
+          taus.push(tau['value']);
+        } else {
+          taus.push(tau);
+        }
+      })
+      this.model.StrategyMethods = strategies;
+      this.model.LaTeachingAidTeacher = tats;
+      this.model.LaTeachingAidUser = taus;
+      console.log(this.model);
+
+      this.activitiesService.update(this.scenarioId, this.activityId, this.model)
+        .pipe(first())
+        .subscribe(
+          data => {
+            this.router.navigate(['/scenarios/', this.scenarioId]);
+          },
+          (error: string) => {
+            this.error = error;
+            this.loading = false;
+          }
+        )
+    } else {
+      this.activitiesService.create(this.scenarioId, this.model)
+        .pipe(first())
+        .subscribe(
+          data => {
+            this.router.navigate(['/scenarios/', this.scenarioId]);
+          },
+          (error: string) => {
+            this.error = error;
+            this.loading = false;
+          }
+        )
+    }
   }
 
   validateLaType(value) {
@@ -92,7 +177,6 @@ export class LearningActivityCreateComponent implements OnInit {
   }
 
   onNext() {
-    console.log(this.model);
     this.submitted = true;
   }
 

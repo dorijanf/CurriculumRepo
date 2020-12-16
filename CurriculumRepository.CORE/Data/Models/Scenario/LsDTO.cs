@@ -12,8 +12,8 @@ namespace CurriculumRepository.CORE.Data.Models.Scenario
             Keywords = new List<string>();
             CorrelationInterdisciplinaritySubjects = new List<string>();
             CollaborationNames = new List<string>();
-            TeachingAidUser = new List<TeachingAidBM>();
-            TeachingAidTeacher = new List<TeachingAidBM>();
+            TeachingAidUser = new List<TeachingAid>();
+            TeachingAidTeacher = new List<TeachingAid>();
             StrategyMethods = new List<StrategyMethodBM>();
             Las = new List<LaDTO>();
         }
@@ -32,8 +32,8 @@ namespace CurriculumRepository.CORE.Data.Models.Scenario
         public TimeSpan Lsduration { get; set; }
         public List<StrategyMethodBM> StrategyMethods { get; set; }
         public List<string> CollaborationNames { get; set; }
-        public List<TeachingAidBM> TeachingAidUser{ get; set; }
-        public List<TeachingAidBM> TeachingAidTeacher { get; set; }
+        public List<TeachingAid> TeachingAidUser{ get; set; }
+        public List<TeachingAid> TeachingAidTeacher { get; set; }
         public List<LaDTO> Las { get; set; }
     }
 }

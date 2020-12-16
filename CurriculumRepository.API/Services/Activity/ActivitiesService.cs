@@ -76,8 +76,12 @@ namespace CurriculumRepository.API.Services.Activity
             }
 
             var la = mapper.Map<La>(model);
+            la.Lsid = ls.Idls;
+            la.Lagrade = ls.Lsgrade;
+            la.Laduration = TimeSpan.FromMinutes(model.LadurationMinute);
             ls.Lsduration += la.Laduration;
             context.Update(ls);
+            context.Add(la);
             await context.SaveChangesAsync();
             foreach (var strategyMethod in model.StrategyMethods)
             {
@@ -121,7 +125,9 @@ namespace CurriculumRepository.API.Services.Activity
             {
                 throw new NotFoundException($"Learning activity with id {activityId} not found.");
             }
+            ls.Lsduration = ls.Lsduration - la.Laduration;
             context.La.Remove(la);
+            context.Ls.Update(ls);
             await context.SaveChangesAsync();
             await lsLaRepository.RemoveLsLa(scenarioId, activityId);
             logger.LogInformation($"Activity {la.Idla} successfully deleted.");
@@ -136,7 +142,7 @@ namespace CurriculumRepository.API.Services.Activity
         /// <param name="activityId"></param>
         /// <param name="model"></param>
         /// <returns>Id of newly updated activity</returns>
-        public async Task<int> UpdateActivity(int scenarioId, int activityId, UpdateLaBM model)
+        public async Task<int> UpdateActivity(int scenarioId, int activityId, LaBM model)
         {
             var ls = await context.Ls.FindAsync(scenarioId);
 
@@ -156,12 +162,6 @@ namespace CurriculumRepository.API.Services.Activity
             if (la == null)
             {
                 throw new NotFoundException($"Scenario {scenarioId} does not exist.");
-            }
-
-            la = mapper.Map<La>(model);
-            if(model.Laduration != null)
-            {
-                ls.Lsduration += model.Laduration;
             }
 
             await laStrategyMethodRepository.RemoveLaStrategyMethods(activityId);
@@ -184,6 +184,21 @@ namespace CurriculumRepository.API.Services.Activity
                 await laTeachingAidRepository.CreateLaTeachingAid(la.Idla, taId, false);
             }
 
+            if (model.LadurationMinute != 0)
+            {
+                ls.Lsduration -= la.Laduration;
+                ls.Lsduration += TimeSpan.FromMinutes(model.LadurationMinute);
+            }
+            la.Laduration = TimeSpan.FromMinutes(model.LadurationMinute);
+            la.Lagrade = ls.Lsgrade;
+            la.Lsid = ls.Idls;
+            la.CooperationId = model.CooperationId;
+            la.DigitalTechnology = model.DigitalTechnology;
+            la.LatypeId = model.LatypeId;
+            la.Laname = model.Laname;
+            la.OrdinalNumber = model.OrdinalNumber;
+            la.Ladescription = model.Ladescription;
+            la.PerformanceId = model.PerformanceId;
             logger.LogInformation($"Activity {la.Idla} successfully updated.");
             context.Update(la);
             context.Update(ls);
@@ -215,13 +230,13 @@ namespace CurriculumRepository.API.Services.Activity
             var lsla = context.Lsla.Where(x => x.Lsid == id)
                 .Select(x => x.La);
 
-            if (lsla == null)
+            var laDTOs = new List<LaDTO>();
+
+            if (lsla.Count() <= 0)
             {
                 logger.LogWarning($"Scenario with id { id } has no associated activities.");
-                throw new NotFoundException("No activities could be found for that learning scenario.");
+                return laDTOs;
             }
-
-            var laDTOs = new List<LaDTO>();
 
             foreach (var la in lsla)
             {
@@ -237,7 +252,7 @@ namespace CurriculumRepository.API.Services.Activity
                 laDTO.Lacollaboration = laCollaboration.CollaborationName;
 
                 var strategyMethodIds = context.LastrategyMethod.Where(x => x.Laid == la.Idla)
-                    .Select(x => x.IdlastrategyMethod);
+                    .Select(x => x.StrategyMethodId);
                 foreach (var strategyMethodId in strategyMethodIds)
                 {
                     var strategyMethod = await context.StrategyMethod.FirstOrDefaultAsync(x => x.IdstrategyMethod == strategyMethodId);
@@ -245,14 +260,14 @@ namespace CurriculumRepository.API.Services.Activity
                 }
 
                 var teachingAidIds = context.LateachingAid.Where(x => x.Laid == la.Idla)
-                    .Select(x => x.IdlateachingAid);
+                    .Select(x => x.TeachingAidId);
                 foreach (var teachingAidId in teachingAidIds)
                 {
                     var teachingAid = await context.TeachingAid.FirstOrDefaultAsync(x => x.IdteachingAid == teachingAidId);
-                    laDTO.TeachingAids.Add(mapper.Map<TeachingAidBM>(teachingAid));
+                    laDTO.TeachingAids.Add(teachingAid);
                 }
 
-                laDTOs.Add(mapper.Map<LaDTO>(la));
+                laDTOs.Add(laDTO);
             }
 
             return laDTOs;
@@ -263,23 +278,47 @@ namespace CurriculumRepository.API.Services.Activity
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Data transfer object containing activity information</returns>
-        public async Task<LaDTO> GetActivity(int id)
+        public async Task<LaBM> GetActivity(int scenarioId, int activityId)
         {
-            var la = await context.La.FindAsync(id);
+            var la = await context.La.FindAsync(activityId);
 
             if (la == null)
             {
                 throw new NotFoundException("Learning activity not found.");
             }
 
-            var ls = await context.Ls.FindAsync(la.Lsid);
+            var ls = await context.Ls.FindAsync(scenarioId);
 
             if (ls.LstypeId == 1 && httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value != ls.UserId.ToString())
             {
                 throw new NotAuthorizedException("Learning scenario which contains this learning activity is private.");
             }
 
-            return mapper.Map<LaDTO>(la);
+            var laBM = mapper.Map<LaBM>(la);
+            laBM.LadurationMinute = (int) la.Laduration.TotalMinutes;
+            var strategyMethodIds = context.LastrategyMethod.Where(x => x.Laid == la.Idla)
+                    .Select(x => x.StrategyMethodId);
+            foreach (var strategyMethodId in strategyMethodIds)
+            {
+                var strategyMethod = await context.StrategyMethod.FirstOrDefaultAsync(x => x.IdstrategyMethod == strategyMethodId);
+                laBM.StrategyMethods.Add(mapper.Map<StrategyMethodBM>(strategyMethod));
+            }
+
+            var teachingAidIds = context.LateachingAid.Where(x => x.Laid == la.Idla)
+                .Select(x => x.TeachingAidId);
+
+            var teachingAidTeacher = context.LateachingAid.Where(x => x.Laid == la.Idla && x.LateachingAidUser == false);
+            foreach (var tat in teachingAidTeacher)
+            {
+                laBM.LaTeachingAidTeacher = await context.TeachingAid.Where(x => x.IdteachingAid == tat.TeachingAidId).ToListAsync();
+            }
+            var teachingAidStudent = context.LateachingAid.Where(x => x.Laid == la.Idla && x.LateachingAidUser == true);
+            foreach (var tas in teachingAidStudent)
+            {
+                laBM.LaTeachingAidUser = await context.TeachingAid.Where(x => x.IdteachingAid == tas.TeachingAidId).ToListAsync();
+            }
+
+            return laBM;
         }
     }
 }

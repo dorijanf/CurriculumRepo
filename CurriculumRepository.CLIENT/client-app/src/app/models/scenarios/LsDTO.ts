@@ -1,6 +1,6 @@
 import { TimeSpan } from '../../helpers/timespan';
 import { LaDTO } from '../activity/LaDTO';
-import { StrategyMethod } from '../StrategyMethod';
+import { StrategyMethodBM } from '../StrategyMethodBM';
 import { TeachingAid } from '../TeachingAid';
 
 export class LsDTO {
@@ -16,7 +16,7 @@ export class LsDTO {
     LearningOutcomeCts: string;
     CorrelationInterdisciplinaritySubjects: string[];
     Lsduration: TimeSpan;
-    StrategyMethods: StrategyMethod[];
+    StrategyMethods: StrategyMethodBM[];
     CollaborationNames: string[];
     TeachingAids: TeachingAid[];
     Las: LaDTO[];

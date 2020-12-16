@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CurriculumRepository.CORE.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,7 +15,7 @@ namespace CurriculumRepository.CORE.Data.Models.Activity
         public string Ladescription { get; set; }
         public List<StrategyMethodBM> StrategyMethods { get; set; }
         public int CooperationId { get; set; }
-        public List<TeachingAidBM> LaTeachingAidUser { get; set; }
-        public List<TeachingAidBM> LaTeachingAidTeacher { get; set; }
+        public List<TeachingAid> LaTeachingAidUser { get; set; }
+        public List<TeachingAid> LaTeachingAidTeacher { get; set; }
     }
 }

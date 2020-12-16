@@ -23,7 +23,6 @@ import { MyProfileComponent } from './components/account/my-profile/my-profile.c
 import { LearningActivityComponent } from './components/learning-activity/learning-activity/learning-activity.component';
 import { LearningActivitiesComponent } from './components/learning-activity/learning-activities/learning-activities.component';
 import { LearningActivityCreateComponent } from './components/learning-activity/learning-activity-create/learning-activity-create.component';
-import { EditProfileComponent } from './components/account/edit-profile/edit-profile.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HomeComponent } from './components/home/home.component';
 import { HttpErrorInterceptor } from 'src/http-error.interceptor';
@@ -31,6 +30,7 @@ import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { MustMatchDirective } from './helpers/must-match.directive';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PaginationService } from './services/pagination.service';
+import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 
 @NgModule({
   declarations: [
@@ -46,9 +46,9 @@ import { PaginationService } from './services/pagination.service';
     LearningActivityComponent,
     LearningActivitiesComponent,
     LearningActivityCreateComponent,
-    EditProfileComponent,
     HomeComponent,
-    MustMatchDirective
+    MustMatchDirective,
+    ConfirmationModalComponent
   ],
   imports: [
     FormsModule,
@@ -79,6 +79,7 @@ import { PaginationService } from './services/pagination.service';
       multi: true
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ConfirmationModalComponent],
 })
 export class AppModule { }

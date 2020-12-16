@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { EditProfileComponent } from './components/account/edit-profile/edit-profile.component';
 import { LoginComponent } from './components/account/login/login.component';
 import { MyProfileComponent } from './components/account/my-profile/my-profile.component';
 import { RegisterComponent } from './components/account/register/register.component';
@@ -20,14 +19,14 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'profile/:id', component: MyProfileComponent, canActivate: [AuthGuard]},
-  { path: 'profile/edit/:id', component: EditProfileComponent, pathMatch: 'full', canActivate: [AuthGuard]},
+  { path: 'profile/:id/edit', component: RegisterComponent, pathMatch: 'full', canActivate: [AuthGuard]},
   { path: '404', component: NotFound404Component, pathMatch: 'full'},
   { path: 'scenarios', component: LearningScenariosComponent, pathMatch: 'full', canActivate: [AuthGuard]},
   { path: 'scenarios/create', component: LearningScenarioCreateComponent, pathMatch: 'full', canActivate: [AuthGuard]},
   { path: 'scenarios/:id', component: LearningScenarioComponent, pathMatch: 'full', canActivate: [AuthGuard]},
   { path: 'scenarios/:scenarioId/create-activity', component: LearningActivityCreateComponent, canActivate: [AuthGuard]},
+  { path: 'scenarios/:scenarioId/create-activity/:activityId', component: LearningActivityCreateComponent, canActivate: [AuthGuard]},
   { path: 'activities/:id', component: LearningActivityComponent, pathMatch: 'full', canActivate: [AuthGuard]},
-  // { path: 'activities', component: LearningActivitiesComponent, pathMatch: 'full', canActivate: [AuthGuard]},
   { path: 'activities/user/:id', component: LearningActivitiesComponent, pathMatch: 'full', canActivate: [AuthGuard]},
 ];
 

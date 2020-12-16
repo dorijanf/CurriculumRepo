@@ -1,6 +1,11 @@
 <div class="col-md-6 offset-md-3 mt-5">
     <div class="card">
-        <h4 class="card-header">Registracija</h4>
+        <div *ngIf="!userId">
+            <h4 class="card-header">Registracija</h4>
+        </div>
+        <div *ngIf="userId">
+            <h4 class="card-header">Ažuriranje osobnih informacija</h4>
+        </div>
         <div class="card-body">
             <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm"
                 [mustMatch]="['Password', 'ConfirmPassword']" novalidate>
@@ -35,7 +40,7 @@
                     <label for="Username">Korisničko ime</label>
                     <input type="text" name="Username" class="form-control" [(ngModel)]="model.Username"
                         #userName="ngModel" [ngClass]="{ 'is-invalid': f.submitted && userName.invalid }" required
-                        maxLength="14" minLength="6" />
+                        maxLength="14" minLength="6" [disabled]="userId !== null || userId !== undefined"/>
                     <div *ngIf="f.submitted && userName.invalid" class="invalid-feedback">
                         <div *ngIf="userName.errors.required">Unos korisničkog imena je obavezno</div>
                         <div *ngIf="userName.errors.maxLength">Korisničko ime mora biti kraće od 14 znakova</div>
@@ -74,7 +79,8 @@
                 </div>
                 <button [disabled]="loading" class="btn btn-primary">
                     <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                    Registriraj se!
+                    <span *ngIf="!userId">Registriraj se!</span>
+                    <span *ngIf="userId">Spremi</span>
                 </button>
                 <button class="btn btn-secondary" type="reset">Odustani</button>
                 <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>

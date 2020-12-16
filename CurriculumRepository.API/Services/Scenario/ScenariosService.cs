@@ -168,11 +168,24 @@ namespace CurriculumRepository.API.Services.Scenario
             learningOutcomeSubjects = learningOutcomeSubjects.Take(learningOutcomeSubjects.Count() - 1).ToArray();
             lsDTO.LearningOutcomeSubjects = learningOutcomeSubjects;
             lsDTO.Las = await activityService.GetActivities(id);
+            lsDTO.Las = lsDTO.Las.OrderBy(x => x.OrdinalNumber).ToList();
 
             // Strategy method, Collaboration and Teaching Aids from LA
             foreach (var la in lsDTO.Las)
             {
                 lsDTO.CollaborationNames.Add(la.Lacollaboration);
+                lsDTO.CollaborationNames = lsDTO.CollaborationNames.Union(lsDTO.CollaborationNames).ToList();
+                lsDTO.StrategyMethods = lsDTO.StrategyMethods.Union(la.StrategyMethods).ToList();
+                var teachingAidTeacher = context.LateachingAid.Where(x => x.Laid == la.Idla && x.LateachingAidUser == false);
+                foreach(var tat in teachingAidTeacher)
+                {
+                    lsDTO.TeachingAidTeacher = await context.TeachingAid.Where(x => x.IdteachingAid == tat.TeachingAidId).ToListAsync();
+                }
+                var teachingAidStudent = context.LateachingAid.Where(x => x.Laid == la.Idla && x.LateachingAidUser == true);
+                foreach(var tas in teachingAidStudent)
+                {
+                    lsDTO.TeachingAidUser = await context.TeachingAid.Where(x => x.IdteachingAid == tas.TeachingAidId).ToListAsync();
+                }
             }
             return lsDTO;
         }
@@ -187,11 +200,11 @@ namespace CurriculumRepository.API.Services.Scenario
             var userLs = new List<Ls>();
             if (id != httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value)
             {
-                userLs = await context.Ls.Where(x => x.UserId == id && x.LstypeId != (int) LsTypeEnum.Private).ToListAsync();
+                userLs = await context.Ls.Where(x => x.UserId == id && x.LstypeId != (int) LsTypeEnum.Private && x.IsDeleted == false).ToListAsync();
             }
             else
             {
-                userLs = await context.Ls.Where(x => x.UserId == id).ToListAsync();
+                userLs = await context.Ls.Where(x => x.UserId == id && x.IsDeleted == false).ToListAsync();
             }
 
             List<LsDTO> lsDTOs = new List<LsDTO>();
@@ -238,7 +251,7 @@ namespace CurriculumRepository.API.Services.Scenario
 
         public async Task<PagedList<LsListDTO>> GetScenarios(ScenarioParameters scenarioParameters)
         {
-            var scenarios = context.Ls.Where(x => x.LstypeId != (int) LsTypeEnum.Private).AsQueryable();
+            var scenarios = context.Ls.Where(x => x.LstypeId != (int) LsTypeEnum.Private && x.IsDeleted == false).AsQueryable();
             IQueryable<Ls> searchResults = Enumerable.Empty<Ls>().AsQueryable();
             if (!string.IsNullOrWhiteSpace(scenarioParameters.Keyword))
             {
@@ -308,7 +321,7 @@ namespace CurriculumRepository.API.Services.Scenario
                         .Select(x => x.Lsid)
                         .Select(x => context.Ls.Find(x))
                         .Select(x => x);
-                    ls = ls.Where(x => x.LstypeId != (int)LsTypeEnum.Private);
+                    ls = ls.Where(x => x.LstypeId != (int)LsTypeEnum.Private && x.IsDeleted == false);
                 }
             }
             return ls;
@@ -318,7 +331,7 @@ namespace CurriculumRepository.API.Services.Scenario
         {
             if (!string.IsNullOrWhiteSpace(scenarioParameters.Lsname))
             {
-                scenarios = scenarios.Where(x => x.Lsname.ToLower().Trim().Contains(scenarioParameters.Lsname.ToLower().Trim()) );
+                scenarios = scenarios.Where(x => x.Lsname.ToLower().Trim().Contains(scenarioParameters.Lsname.ToLower().Trim()) && x.IsDeleted == false);
             }
             return scenarios;
         }
@@ -327,12 +340,12 @@ namespace CurriculumRepository.API.Services.Scenario
         {
             if (scenarioParameters.Lsgrade >= 1 && scenarioParameters.Lsgrade <= 8)
             {
-                scenarios = scenarios.Where(x => x.Lsgrade == scenarioParameters.Lsgrade);
+                scenarios = scenarios.Where(x => x.Lsgrade == scenarioParameters.Lsgrade && x.IsDeleted == false);
             }
 
             if(scenarioParameters.TeachingSubjectId != 0)
             {
-                scenarios = scenarios.Where(x => x.TeachingSubjectId == scenarioParameters.TeachingSubjectId);
+                scenarios = scenarios.Where(x => x.TeachingSubjectId == scenarioParameters.TeachingSubjectId && x.IsDeleted == false);
             }
 
             return scenarios;

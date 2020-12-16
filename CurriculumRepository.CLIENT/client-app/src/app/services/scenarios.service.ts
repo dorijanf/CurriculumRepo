@@ -55,8 +55,8 @@ export class ScenariosService {
         return this.http.get<LsListDTO[]>(this.appUrl + this.apiUrl + 'user/' + userId);
     }
 
-    delete(scenarioId: number) {
-        return this.http.delete(this.appUrl + this.apiUrl + scenarioId);
+    delete(scenarioId: number) : Observable<any> {
+        return this.http.delete<any>(this.appUrl + this.apiUrl + scenarioId);
     }
 
     update(scenarioId: number, model: LsBM) {

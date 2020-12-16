@@ -1,9 +1,10 @@
-﻿using System;
+﻿using CurriculumRepository.CORE.Data.Helpers;
+using System;
 using System.Collections.Generic;
 
 namespace CurriculumRepository.CORE.Entities
 {
-    public partial class La
+    public partial class La : IDeletable
     {
         public La()
         {
@@ -16,7 +17,7 @@ namespace CurriculumRepository.CORE.Entities
         public string Laname { get; set; }
         public TimeSpan Laduration { get; set; }
         public string Ladescription { get; set; }
-        public byte Lagrade { get; set; }
+        public int? Lagrade { get; set; }
         public bool DigitalTechnology { get; set; }
         public string Laacknowledgment { get; set; }
         public int Lsid { get; set; }
@@ -25,6 +26,7 @@ namespace CurriculumRepository.CORE.Entities
         public int CooperationId { get; set; }
         public int LastrategiesId { get; set; }
         public int OrdinalNumber { get; set; }
+        public bool IsDeleted { get; set; }
 
         public virtual Lacollaboration Cooperation { get; set; }
         public virtual Latype Latype { get; set; }

@@ -54,16 +54,16 @@ export class AccountService {
     return this.http.get<UserDTO>(this.appUrl + this.apiUrl + id);
   }
 
-  delete(id: string) {
-    return this.http.delete(this.appUrl + this.apiUrl + id);
+  delete(id: string): Observable<any>{
+    return this.http.delete<any>(this.appUrl + this.apiUrl + id);
   }
 
-  update(model: UpdateUserBM) {
-    return this.http.patch(this.appUrl + this.apiUrl, model);
-  }
+update(model: UpdateUserBM): Observable<any> {
+  return this.http.patch<any>(this.appUrl + this.apiUrl, model);
+}
 
-  logout() {
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
-  }
+logout() {
+  localStorage.removeItem('currentUser');
+  this.currentUserSubject.next(null);
+}
 }

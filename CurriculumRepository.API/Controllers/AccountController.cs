@@ -181,7 +181,7 @@ namespace CurriculumRepository.API.Controllers
             await userManager.UpdateAsync(user);
             await context.SaveChangesAsync();
             
-            return Ok($"User successfully updated.");
+            return Ok(new { userId = user.Id });
         }
 
         /// <summary>

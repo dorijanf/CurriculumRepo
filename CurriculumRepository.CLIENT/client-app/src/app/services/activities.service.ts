@@ -23,20 +23,20 @@ export class ActivitiesService {
     this.apiUrl2 = '/Activities/'
   }
 
-  getActivity(scenarioId: number, activityId: number) : Observable<LaDTO>{
-      return this.http.get<LaDTO>(this.appUrl + this.apiUrl + scenarioId + this.apiUrl2 + activityId)
+  getActivity(scenarioId: number, activityId: number) : Observable<LaBM>{
+      return this.http.get<LaBM>(this.appUrl + this.apiUrl + scenarioId + this.apiUrl2 + activityId)
   }
 
   getActivities(scenarioId: number, activityId: number) : Observable<LaDTO[]>{
       return this.http.get<LaDTO[]>(this.appUrl + this.apiUrl + scenarioId + this.apiUrl2 + activityId)
   }
 
-  delete(scenarioId: number, activityId: number) {
-      return this.http.delete(this.appUrl + this.apiUrl + scenarioId + this.apiUrl2 + activityId);
+  delete(scenarioId: number, activityId: number) : Observable<any> {
+      return this.http.delete<any>(this.appUrl + this.apiUrl + scenarioId + this.apiUrl2 + activityId);
   }
 
-  update(scenarioId: number, activityId: number, model: UpdateLaBM) {
-      return this.http.patch(this.appUrl + this.apiUrl + scenarioId + this.apiUrl2 + activityId, model);
+  update(scenarioId: number, activityId: number, model: LaBM) : Observable<any> {
+      return this.http.patch<any>(this.appUrl + this.apiUrl + scenarioId + this.apiUrl2 + activityId, model);
   }
 
   create(scenarioId: number, model: LaBM) {

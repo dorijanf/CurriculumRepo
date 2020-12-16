@@ -2,28 +2,26 @@
 <ng-container *ngIf="(scenarios$ | async) as scenarios; else loading">
     <div class="container">
         <div class="row">
-            <div class="col">
+            <div class="col col-sm-8">
                 <form [formGroup]="resultsForm">
                     <div class="form-row">
-                        <span class="text-center">Prikaži</span>
-                        <ng-select appearance="outline" [clearable]="false" formControlName="scenarios"
-                            (change)="setNumberOfResults()">
-                            <ng-option *ngFor="let scenario of scenariosPerPageResults" [value]="scenario">
-                                {{scenario}}
-                            </ng-option>
+                        <span class="text-center">Broj scenarija:</span>
+                        <ng-select class="result-number" appearance="outline" [clearable]="false" formControlName="scenarios"
+                            (change)="setNumberOfResults()" [items]="scenariosPerPageResults">
                         </ng-select>
-                        <span class="text-center">scenarija</span>
-                        <ng-select appearance="outline" [clearable]="false" formControlName="teachingSubjects"
+                        <span class="text-center">Predmet:</span>
+                        <ng-select class="teaching-subject" appearance="outline" [clearable]="false" formControlName="teachingSubjects"
                             (change)="setTeachingSubject()">
                             <ng-option [value]="''">Svi predmeti</ng-option>
                             <ng-option *ngFor="let teachingSubject of teachingSubjects"
                                 [value]="teachingSubject['idteachingSubject']">
                                 <span
-                                    [style.color]="getBackgroundColor(teachingSubject['idteachingSubject'])">{{teachingSubject['teachingSubjectName']}}</span>
+                                    [style.color]="getBackgroundColor(teachingSubject['idteachingSubject'])">{{teachingSubject['teachingSubjectName']}}
+                                </span>
                             </ng-option>
                         </ng-select>
                         <span class="text-center">Sortiraj:</span>
-                        <ng-select appearance="outline" [clearable]="false" formControlName="orderBy"
+                        <ng-select class="sort" appearance="outline" [clearable]="false" formControlName="orderBy"
                             (change)="setOrderBy()">
                             <ng-option [value]="'lsName'">Uzlazno</ng-option>
                             <ng-option [value]="'lsName desc'">Silazno</ng-option>
@@ -31,12 +29,12 @@
                     </div>
                 </form>
             </div>
-            <div class="col justify-content-center">
+            <div class="col-sm-4 justify-content-center">
                 <form (ngSubmit)="setSearchText()" [formGroup]="searchForm">
                     <div class="form-row">
                         <input type="text" formControlName="search" class="form-control"
                             placeholder="Preatraži po nazivu ili ključnoj riječi">
-                        <button type="submit" class="btn btn-primary btn-submit">Pretraži</button>
+                        <button type="submit" class="btn btn-primary btn-submit"><fa-icon [icon]="faSearch"></fa-icon></button>
                     </div>
                 </form>
             </div>
@@ -50,6 +48,7 @@
                         <div [style.background-color]="getBackgroundColor(scenario['teachingSubjectId'])"
                             class="card-header">
                             <h5 class="card-title text-truncate">{{scenario['lsname']}}</h5>
+                            <img class="teaching-icon" src="{{getIcon(scenario['teachingSubjectId'])}}" alt="ikona nastavnog predmeta">
                         </div>
                         <div class="card-body">
                             <p class="card-text ctext">{{scenario['lsdescription']}}</p>

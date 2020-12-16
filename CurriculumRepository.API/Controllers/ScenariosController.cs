@@ -66,7 +66,7 @@ namespace CurriculumRepository.API.Controllers
         public async Task<IActionResult> DeleteScenario([FromRoute] int id)
         {
             var result = await scenariosService.DeleteScenario(id);
-            return Ok($"Scenario {result} successfully deleted.");
+            return Ok(new { scenarioId = result});
         }
 
         [Authorize(Roles = "korisnik")]

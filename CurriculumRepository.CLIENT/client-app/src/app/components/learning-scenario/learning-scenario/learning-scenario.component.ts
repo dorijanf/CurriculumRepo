@@ -5,9 +5,13 @@ import { UserDTO } from 'src/app/models/account/UserDTO';
 import { LsDTO } from 'src/app/models/scenario/LsDTO';
 import { AccountService } from 'src/app/services/account.service';
 import { ScenariosService } from 'src/app/services/scenarios.service';
-import { faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { tap } from 'rxjs/operators';
 import { AuthenticationResponseDTO } from 'src/app/models/account/AuthenticationResponseDTO';
+import { ActivitiesService } from 'src/app/services/activities.service';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { ConfirmationModalComponent } from '../../confirmation-modal/confirmation-modal.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-learning-scenario',
@@ -16,13 +20,18 @@ import { AuthenticationResponseDTO } from 'src/app/models/account/Authentication
 })
 export class LearningScenarioComponent implements OnInit {
   faEdit = faEdit;
+  faTrash = faTrash;
   faPlusCircle = faPlusCircle;
   model$: Observable<LsDTO>;
   user$: Observable<UserDTO>;
   scenarioId: number;
   currentUser: AuthenticationResponseDTO;
-  
-  constructor(private scenariosService: ScenariosService, private route: ActivatedRoute, private authenticationService: AccountService) { }
+
+  constructor(private scenariosService: ScenariosService, 
+    private activitiesService: ActivitiesService, 
+    private route: ActivatedRoute, 
+    private authenticationService: AccountService, 
+    private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -37,10 +46,13 @@ export class LearningScenarioComponent implements OnInit {
     this.scenariosService.getScenario(this.scenarioId).subscribe(x => {
       this.user$ = this.authenticationService.getUser(x['userId']);
     })
+    this.model$.subscribe(x => {
+      console.log(x);
+    })
   }
 
   setUserValue() {
-    if(this.authenticationService.isLoggedIn){
+    if (this.authenticationService.isLoggedIn) {
       this.authenticationService.currentUser.pipe(
         tap(user => {
           if (user) {
@@ -50,8 +62,20 @@ export class LearningScenarioComponent implements OnInit {
           }
         })
       )
-      .subscribe()
+        .subscribe()
     }
+  }
+
+  public deleteActivity(entity: string, id: number) {
+    const modalRef = this.modalService.open(ConfirmationModalComponent);
+    if (entity === 'activity') {
+      modalRef.componentInstance.entity = entity;
+      modalRef.componentInstance.activityId = id;
+    }
+    else {
+      modalRef.componentInstance.entity = entity;
+    }
+    modalRef.componentInstance.scenarioId = this.scenarioId;
   }
 }
 

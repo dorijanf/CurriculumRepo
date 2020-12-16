@@ -7,6 +7,11 @@ namespace CurriculumRepository.CORE.Data.Models.Activity
 {
     public class LaDTO
     {
+        public LaDTO()
+        {
+            StrategyMethods = new List<StrategyMethodBM>();
+            TeachingAids = new List<TeachingAid>();
+        }
         public int Idla { get; set; }
         public int OrdinalNumber { get; set; }
         public string Laperformance { get; set; }
@@ -17,8 +22,8 @@ namespace CurriculumRepository.CORE.Data.Models.Activity
         public string Ladescription { get; set; }
         public List<StrategyMethodBM> StrategyMethods { get; set; }
         public string Lacollaboration { get; set; }
-        public byte Lagrade { get; set; }
-        public List<TeachingAidBM> TeachingAids { get; set; }
+        public int? Lagrade { get; set; }
+        public List<TeachingAid> TeachingAids { get; set; }
         public string Laacknowledgment { get; set; }
     }
 }

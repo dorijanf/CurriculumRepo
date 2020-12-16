@@ -18,7 +18,7 @@ namespace CurriculumRepository.CORE.Data.Validators.Scenario
                 .WithMessage("Activity must have a type.");
             #endregion
 
-            #region Name, Duration, Description
+            #region Name, Description
             RuleFor(x => x.Laname).NotEmpty()
                 .WithMessage("Activity name is required.");
             RuleFor(x => x.Laname).Must(ValidationHelpers.NotContainSpecial)
@@ -29,10 +29,6 @@ namespace CurriculumRepository.CORE.Data.Validators.Scenario
                 .WithMessage("Activity name must be at least 14 characters long.");
             RuleFor(x => x.Ladescription).MaximumLength(800)
                 .WithMessage("Activity description can have a maximum of 400 characters.");
-            RuleFor(x => x.Laduration).Must(ValidationHelpers.GreaterThan1Minute)
-                .WithMessage("Activity duration must be equal to or greater than one minute.");
-            RuleFor(x => x.Laduration).Must(ValidationHelpers.LesserThan120Minutes)
-                .WithMessage("Activity duration must be lesser than or equal to 120 minutes");
             #endregion
         }
     }

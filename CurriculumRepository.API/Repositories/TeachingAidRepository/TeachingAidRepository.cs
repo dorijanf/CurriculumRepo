@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CurriculumRepository.API.Extensions.Exceptions;
 using CurriculumRepository.CORE.Data;
-using CurriculumRepository.CORE.Data.Models;
 using CurriculumRepository.CORE.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -21,7 +20,7 @@ namespace CurriculumRepository.API.Repositories.TeachingAidRepository
             this.mapper = mapper;
         }
 
-        public async Task<int> CreateTeachingAid(TeachingAidBM model)
+        public async Task<int> CreateTeachingAid(TeachingAid model)
         {
             var teachingAid = await context.TeachingAid.FirstOrDefaultAsync(x => x.TeachingAidName == model.TeachingAidName);
             if(teachingAid != null)
@@ -30,14 +29,14 @@ namespace CurriculumRepository.API.Repositories.TeachingAidRepository
             }
             else
             {
-                teachingAid = mapper.Map<TeachingAid>(model);
+                teachingAid = mapper.Map<CORE.Entities.TeachingAid>(model);
                 context.TeachingAid.Add(teachingAid);
                 await context.SaveChangesAsync();
                 return teachingAid.IdteachingAid;
             }
         }
 
-        public async Task<TeachingAid> GetTeachingAid(int id)
+        public async Task<CORE.Entities.TeachingAid> GetTeachingAid(int id)
         {
             var teachingAid = await context.TeachingAid.FindAsync(id);
 
@@ -49,7 +48,7 @@ namespace CurriculumRepository.API.Repositories.TeachingAidRepository
             return teachingAid;
         }
 
-        public async Task<IEnumerable<TeachingAid>> GetTeachingAids()
+        public async Task<IEnumerable<CORE.Entities.TeachingAid>> GetTeachingAids()
         {
             return await context.TeachingAid.ToListAsync();
         }

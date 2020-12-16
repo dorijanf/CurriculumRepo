@@ -9,6 +9,6 @@ namespace CurriculumRepository.API.Repositories.TeachingAidRepository
     {
         Task<IEnumerable<TeachingAid>> GetTeachingAids();
         Task<TeachingAid> GetTeachingAid(int id);
-        Task<int> CreateTeachingAid(TeachingAidBM model);
+        Task<int> CreateTeachingAid(TeachingAid model);
     }
 }

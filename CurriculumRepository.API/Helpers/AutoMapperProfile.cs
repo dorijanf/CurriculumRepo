@@ -32,17 +32,13 @@ namespace CurriculumRepository.API.Helpers
 
             #region Activity
             CreateMap<LaDTO, La>();
+            CreateMap<La, LaDTO>();
             CreateMap<LaBM, La>();
             CreateMap<La, LaBM>();
             CreateMap<UpdateLaBM, La>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<La, UpdateLaBM>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-            #endregion
-
-            #region TeachingAid
-            CreateMap<TeachingAid, TeachingAidBM>();
-            CreateMap<TeachingAidBM, TeachingAid>();
             #endregion
 
             #region StrategyMethod

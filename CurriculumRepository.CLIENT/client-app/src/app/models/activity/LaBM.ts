@@ -1,4 +1,4 @@
-import { TimeSpan } from 'src/app/helpers/timespan';
+import { StrategyMethodBM } from '../StrategyMethodBM';
 import { TeachingAid } from '../TeachingAid';
 
 export class LaBM {
@@ -7,10 +7,9 @@ export class LaBM {
     LatypeId: number;
     DigitalTechnology: boolean;
     Laname: string;
-    Laduration: TimeSpan;
     LadurationMinute: number;
     Ladescription: string;
-    StrategyMethods: string;
+    StrategyMethods: StrategyMethodBM[];
     CooperationId: number;
     LaTeachingAidUser: TeachingAid[];
     LaTeachingAidTeacher: TeachingAid[];

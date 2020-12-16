@@ -39,7 +39,6 @@ import { ResponseDTO } from './app/models/ResponseDTO';
               this.router.navigate(['404']);
               this.accountService.logout();
             }
-            this.router.navigate(['404']);
             return throwError(errorMessage);
           })
         )

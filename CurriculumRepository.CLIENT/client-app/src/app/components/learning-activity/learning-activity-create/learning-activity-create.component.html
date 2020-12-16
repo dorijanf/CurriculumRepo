@@ -1,4 +1,9 @@
-<h1>Izrada aktivnosti</h1>
+<div *ngIf="activityId === null || activityId === undefined">
+    <h1>Izrada aktivnosti</h1>
+</div>
+<div *ngIf="activityId">
+    <h1>Ažuriranje aktivnosti</h1>
+</div>
 <!-- Top content -->
 <div class="top-content">
     <div class="row">
@@ -6,220 +11,206 @@
             <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" method="post" class="f1">
                 <!-- Form Legend-->
                 <h3>Aktivnost</h3>
-                    <p class="desc">Unesite podatke o novoj aktivnosti koja će se dodati prethodno kreiranom scenariju
-                        učenja</p>
-                    <div class="f1-steps">
-                        <div class="f1-progress">
-                            <div class="f1-progress-line" data-now-value="16.66" data-number-of-steps="3"
-                                style="width: 14%;"></div>
+                <p class="desc">Unesite podatke o aktivnosti koja će se dodati prethodno kreiranom scenariju
+                    učenja</p>
+                <div class="f1-steps">
+                    <div class="f1-progress">
+                        <div class="f1-progress-line" data-now-value="16.66" data-number-of-steps="3"
+                            style="width: 14%;"></div>
+                    </div>
+                    <div class="f1-step active">
+                        <div class="f1-step-icon">
+                            <fa-icon [icon]="faInfo"></fa-icon>
                         </div>
-                        <div class="f1-step active">
-                            <div class="f1-step-icon">
-                                <fa-icon [icon]="faInfo"></fa-icon>
-                            </div>
-                            <p>opće informacije</p>
+                        <p>opće informacije</p>
+                    </div>
+                    <div class="f1-step">
+                        <div class="f1-step-icon">
+                            <fa-icon [icon]="faListAlt"></fa-icon>
                         </div>
-                        <div class="f1-step">
-                            <div class="f1-step-icon">
-                                <fa-icon [icon]="faListAlt"></fa-icon>
-                            </div>
-                            <p>specifikacije izvođenja</p>
+                        <p>specifikacije izvođenja</p>
+                    </div>
+                    <div class="f1-step">
+                        <div class="f1-step-icon">
+                            <fa-icon [icon]="faWrench"></fa-icon>
                         </div>
-                        <div class="f1-step">
-                            <div class="f1-step-icon">
-                                <fa-icon [icon]="faWrench"></fa-icon>
-                            </div>
-                            <p>alati i specifikacije</p>
+                        <p>alati i specifikacije</p>
+                    </div>
+                </div>
+                <!-- Form Legend End-->
+                <!-- Formset Start -->
+                <fieldset>
+                    <h4>Opće informacije</h4>
+                    <div class="form-group">
+                        <label for="OrdinalNumber">Redni broj aktivnosti</label>
+                        <ng-select name="OrdinalNumber" [(ngModel)]="model.OrdinalNumber" style="width:50%;">
+                            <ng-option *ngFor="let number of ordinalNumbers" [value]="number">
+                                {{number}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="LaType">Tip aktivnosti</label>
+                        <select (blur)="validateLaType(model.LatypeId)" (change)="validateLaType(model.LatypeId)"
+                            name="LaType" [(ngModel)]="model.LatypeId" class="lsubjects form-control"
+                            #TeachingSubjectId="ngModel" style="width:50%"
+                            [ngClass]="{ 'is-invalid' : submitted && laTypeError }">
+                            <option [ngValue]="0">Odaberite tip aktivnosti</option>
+                            <option *ngFor="let laType of laTypes" [value]="laType['idlatype']"
+                                [ngValue]="laType['idlatype']">
+                                {{laType['latypeName']}}</option>
+                        </select>
+                        <div *ngIf="submitted && laTypeError" class="invalid-feedback">
+                            <div *ngIf="laTypeError">Odaberite tip aktivnosti</div>
                         </div>
                     </div>
-                    <!-- Form Legend End-->
-                    <!-- Formset Start -->
-                    <fieldset>
-                        <h4>Opće informacije</h4>
-                        <div class="form-group">
-                            <label for="OrdinalNumber">Redni broj aktivnosti</label>
-                            <ng-select name="OrdinalNumber" [(ngModel)]="model.OrdinalNumber" style="width:50%;">
-                                <ng-option *ngFor="let number of ordinalNumbers" [value]="number">
-                                    {{number}}
-                                </ng-option>
-                            </ng-select>
+                    <div class="form-group">
+                        <label for="Laname">Naziv aktivnosti</label>
+                        <input type="text" name="Laname" placeholder="Unesite naziv aktivnosti"
+                            [(ngModel)]="model.Laname" class="form-control" #Laname="ngModel"
+                            [ngClass]="{ 'is-invalid' : submitted && Laname.invalid }" maxLength="50" minLength="3"
+                            required pattern="^[a-zA-Z0-9.-_šđčć,ž ]+$">
+                        <div *ngIf="submitted && Laname.invalid" class="invalid-feedback">
+                            <div *ngIf="Laname.errors.required">Unos imena aktivnosti je obavezan</div>
+                            <div *ngIf="Laname.errors.pattern">Ime ne smije sadržavati posebne znakove</div>
+                            <div *ngIf="Laname.errors.maxLength">Ime smije imati maksimalno 50 znakova</div>
+                            <div *ngIf="Laname.errors.minlength">Ime mora imati barem 3 znaka</div>
                         </div>
-                        <div class="form-group">
-                            <label for="LaType">Tip aktivnosti</label>
-                            <select (blur)="validateLaType(model.LatypeId)" (change)="validateLaType(model.LatypeId)"
-                                name="LaType" [(ngModel)]="model.LatypeId" class="lsubjects form-control"
-                                #TeachingSubjectId="ngModel" style="width:50%"
-                                [ngClass]="{ 'is-invalid' : submitted && laTypeError }">
-                                <option [ngValue]="0">Odaberite tip aktivnosti</option>
-                                <option *ngFor="let laType of laTypes" [value]="laType['idlatype']"
-                                    [ngValue]="laType['latypeName']">
-                                    {{laType['latypeName']}}</option>
-                            </select>
-                            <div *ngIf="submitted && laTypeError" class="invalid-feedback">
-                                <div *ngIf="laTypeError">Odaberite tip aktivnosti</div>
+                    </div>
+                    <!-- Form Group End -->
+                    <!-- Form Group -->
+                    <div class="form-group">
+                        <label for="Ladescription">Kratak opis</label>
+                        <textarea name="Ladescription" placeholder="Unesite kratak opis aktivnosti"
+                            [(ngModel)]="model.Ladescription" class="form-control" #Ladescription="ngModel"
+                            [ngClass]="{ 'is-invalid' : submitted && Ladescription.invalid }" required minLength="10"
+                            maxLength="800"></textarea>
+                        <div *ngIf="submitted && Ladescription.invalid" class="invalid-feedback">
+                            <div *ngIf="Ladescription.errors.required">Unesite kratak opis scenarija</div>
+                            <div *ngIf="Ladescription.errors.minLength">Kratak opis mora sadržavati barem 10 znakova
+                            </div>
+                            <div *ngIf="Ladescription.errors.maxLength">Opis ne može sadržavati više od 800 znakova
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="Laname"></label>
-                            <input type="text" name="Laname" placeholder="Unesite naziv aktivnosti"
-                                [(ngModel)]="model.Laname" class="form-control" #Laname="ngModel"
-                                [ngClass]="{ 'is-invalid' : submitted && Laname.invalid }" maxLength="50" minLength="3"
-                                required pattern="^[a-zA-Z0-9._-šđčć,ž ]+$">
-                            <div *ngIf="submitted && Laname.invalid" class="invalid-feedback">
-                                <div *ngIf="Laname.errors.required">Unos imena aktivnosti je obavezan</div>
-                                <div *ngIf="Laname.errors.pattern">Ime ne smije sadržavati posebne znakove</div>
-                                <div *ngIf="Laname.errors.maxLength">Ime smije imati maksimalno 50 znakova</div>
-                                <div *ngIf="Laname.errors.minlength">Ime mora imati barem 3 znaka</div>
-                            </div>
+                    </div>
+                    <!-- Form Group End -->
+                    <!-- Navigation Buttons -->
+                    <div class="f1-buttons">
+                        <button type="button" class="btn btn-next" (click)="onNext()">Sljedeća</button>
+                    </div>
+                </fieldset>
+                <!-- Fieldset End -->
+                <!-- Fieldset Start -->
+                <fieldset>
+                    <h4>Specifikacije izvođenja aktivnosti</h4>
+                    <div class="form-group">
+                        <label for="LaPerformance">Način izvođenja</label><br />
+                        <label class="form-check-inline"><input name="LaPerformance" [(ngModel)]="model.PerformanceId"
+                                class="form-check-input" #LaPerformance="ngModel" [value]="1" type="radio"
+                                checked="true">
+                            Aktivnost u razredu
+                        </label>
+                        <label class="form-check-inline"><input name="LaPerformance" [(ngModel)]="model.PerformanceId"
+                                class="form-check-input" #LaPerformance="ngModel" [value]="2" type="radio">
+                            Aktivnost izvan razreda
+                        </label>
+                        <label class="form-check-inline"><input name="LaPerformance" [(ngModel)]="model.PerformanceId"
+                                class="form-check-input" #LaPerformance="ngModel" [value]="3" type="radio">
+                            Aktivnost kod kuće
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="LadurationMinute">Trajanje aktivnosti (u minutama)</label>
+                        <input type="number" name="LadurationMinute" class="form-control"
+                            placeholder="Unesite minute (primjer: 10)" [(ngModel)]="model.LadurationMinute"
+                            #LadurationMinute="ngModel"
+                            [ngClass]="{ 'is-invalid' : submitted && LadurationMinute.invalid }" required>
+                        <div *ngIf="submitted && LadurationMinute.invalid" class="invalid-feedback">
+                            <div *ngIf="LadurationMinute.errors.required">Unesite vrijeme trajanja aktivnosti u
+                                minutama</div>
                         </div>
-                        <!-- Form Group End -->
-                        <!-- Form Group -->
-                        <div class="form-group">
-                            <label for="Ladescription">Kratak opis</label>
-                            <textarea name="Ladescription" placeholder="Unesite kratak opis aktivnosti"
-                                [(ngModel)]="model.Ladescription" class="form-control" #Ladescription="ngModel"
-                                [ngClass]="{ 'is-invalid' : submitted && Ladescription.invalid }" required
-                                minLength="10" maxLength="800"></textarea>
-                            <div *ngIf="submitted && Ladescription.invalid" class="invalid-feedback">
-                                <div *ngIf="Ladescription.errors.required">Unesite kratak opis scenarija</div>
-                                <div *ngIf="Ladescription.errors.minLength">Kratak opis mora sadržavati barem 10 znakova
-                                </div>
-                                <div *ngIf="Ladescription.errors.maxLength">Opis ne može sadržavati više od 800 znakova
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Form Group End -->
-                        <!-- Navigation Buttons -->
-                        <div class="f1-buttons">
-                            <button type="button" class="btn btn-next" (click)="onNext()">Sljedeća</button>
-                        </div>
-                    </fieldset>
-                    <!-- Fieldset End -->
-                    <!-- Fieldset Start -->
-                    <fieldset>
-                        <h4>Specifikacije izvođenja aktivnosti</h4>
-                        <div class="form-group">
-                            <label for="LaPerformance">Način izvođenja</label><br />
-                            <label class="form-check-inline"><input name="LaPerformance"
-                                    [(ngModel)]="model.PerformanceId" class="form-check-input" #LaPerformance="ngModel"
-                                    [value]="1" type="radio" checked="true">
-                                Aktivnost u razredu
-                            </label>
-                            <label class="form-check-inline"><input name="LaPerformance"
-                                    [(ngModel)]="model.PerformanceId" class="form-check-input" #LaPerformance="ngModel"
-                                    [value]="2" type="radio">
-                                Aktivnost izvan razreda
-                            </label>
-                            <label class="form-check-inline"><input name="LaPerformance"
-                                    [(ngModel)]="model.PerformanceId" class="form-check-input" #LaPerformance="ngModel"
-                                    [value]="3" type="radio">
-                                Aktivnost kod kuće
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label for="LadurationMinute">Trajanje aktivnosti (u minutama)</label>
-                            <input type="number" name="LadurationMinute" class="form-control" placeholder="Unesite minute (primjer: 10)"
-                                [(ngModel)]="model.LadurationMinute" #LadurationMinute="ngModel"
-                                [ngClass]="{ 'is-invalid' : submitted && LadurationMinute.invalid }" required>
-                            <div *ngIf="submitted && LadurationMinute.invalid" class="invalid-feedback">
-                                <div *ngIf="LadurationMinute.errors.required">Unesite vrijeme trajanja aktivnosti u
-                                    minutama</div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="StrategyMethods">Strategije i metode učenja i poučavanja</label>
-                            <ng-select name="StrategyMethods" [(ngModel)]="model.StrategyMethods" [multiple]="true">
-                                <ng-option *ngFor="let strategyMethod of strategyMethods" [value]="strategyMethod">
-                                    {{strategyMethod['strategyMethodName']}}
-                                </ng-option>
-                            </ng-select>
-                        </div>
-                        <div class="form-group">
-                            <label for="LaCollaboration">Razina suradnje</label>
-                            <ng-select name="LaCollaboration" [(ngModel)]="model.CooperationId">
-                                <ng-option *ngFor="let laCollaboration of laCollaborations"
-                                    [value]="laCollaboration['idcollaboration']">
-                                    {{laCollaboration['collaborationName']}}
-                                </ng-option>
-                            </ng-select>
-                        </div>
-                        <!-- Navigation Buttons -->
-                        <div class="f1-buttons">
-                            <button type="button" class="btn btn-previous">Prethodna</button>
-                            <button type="button" class="btn btn-next">Sljedeća</button>
-                        </div>
-                    </fieldset>
-                    <!-- Fieldset End -->
-                    <!-- Fieldset Start -->
-                    <fieldset>
-                        <h4>Alati i tehnologije</h4>
-                        <div class="form-group">
-                            <label for="DigitalTechnology">Korištene digitalne tehnologije</label><br />
-                            <label class="form-check-inline"><input name="DigitalTechnology"
-                                    [(ngModel)]="model.DigitalTechnology" class="form-check-input"
-                                    #DigitalTechnology="ngModel" [value]="1" type="radio" checked="true">
-                                Da
-                            </label>
-                            <label class="form-check-inline"><input name="DigitalTechnology"
-                                    [(ngModel)]="model.DigitalTechnology" class="form-check-input"
-                                    #DigitalTechnology="ngModel" [value]="2" type="radio">
-                                Ne
-                            </label>
-                        </div>
-                        <br />
-                        <div class="form-group">
-                            <label for="TeachingAidTeacher">Nastavna sredstva i pomagala potrebna
-                                <strong>nastavniku</strong></label><br />
-                            <select name="TeachingAidTeacher" [(ngModel)]="model.LaTeachingAidTeacher"
-                                class="form-control" #LaTeachingAidTeacher="ngModel" multiple>
-                                <optgroup label="Digitalni alati">
-                                    <option *ngFor="let digitalTool of digitalTools" [value]="digitalTool">
-                                        {{digitalTool['teachingAidName']}}</option>
-                                </optgroup>
-                                <optgroup label="Digitalni uređaji">
-                                    <option *ngFor="let digitalDevice of digitalDevices" [value]="digitalDevice">
-                                        {{digitalDevice['teachingAidName']}}</option>
-                                </optgroup>
-                                <optgroup label="Digitalne igre">
-                                    <option *ngFor="let digitalGame of digitalGames" [value]="digitalGame">
-                                        {{digitalGame['teachingAidName']}}</option>
-                                </optgroup>
-                                <optgroup label="Ostala sredstva i pomagala">
-                                    <option *ngFor="let otherTool of otherTools" [value]="otherTool">
-                                        {{otherTool['teachingAidName']}}</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="TeachingAidUser">Nastavna sredstva i pomagala potrebna
-                                <strong>učenicima</strong></label><br />
-                            <select name="TeachingAidUser" [(ngModel)]="model.LaTeachingAidUser"
-                                class="form-control" #LaTeachingAidTeacher="ngModel" multiple>
-                                <optgroup label="Digitalni alati">
-                                    <option *ngFor="let digitalTool of digitalTools" [value]="digitalTool">
-                                        {{digitalTool['teachingAidName']}}</option>
-                                </optgroup>
-                                <optgroup label="Digitalni uređaji">
-                                    <option *ngFor="let digitalDevice of digitalDevices" [value]="digitalDevice">
-                                        {{digitalDevice['teachingAidName']}}</option>
-                                </optgroup>
-                                <optgroup label="Digitalne igre">
-                                    <option *ngFor="let digitalGame of digitalGames" [value]="digitalGame">
-                                        {{digitalGame['teachingAidName']}}</option>
-                                </optgroup>
-                                <optgroup label="Ostala sredstva i pomagala">
-                                    <option *ngFor="let otherTool of otherTools" [value]="otherTool">
-                                        {{otherTool['teachingAidName']}}</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <!-- Navigation Buttons -->
-                        <div class="f1-buttons">
-                            <button type="button" class="btn btn-previous">Prethodna</button>
-                            <button type="submit" id="btn-submit" class="btn btn-submit">Kreiraj scenarij</button>
-                        </div>
-                    </fieldset>
-                    <!-- Fieldset End -->
+                    </div>
+                    <div class="form-group">
+                        <label for="StrategyMethods">Strategije i metode učenja i poučavanja</label>
+                        <ng-select name="StrategyMethods" [(ngModel)]="model.StrategyMethods" [multiple]="true">
+                            <ng-option *ngFor="let strategyMethod of strategyMethods" [value]="strategyMethod">
+                                {{strategyMethod['strategyMethodName']}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="LaCollaboration">Razina suradnje</label>
+                        <ng-select name="LaCollaboration" [(ngModel)]="model.CooperationId">
+                            <ng-option *ngFor="let laCollaboration of laCollaborations"
+                                [value]="laCollaboration['idcollaboration']">
+                                {{laCollaboration['collaborationName']}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                    <!-- Navigation Buttons -->
+                    <div class="f1-buttons">
+                        <button type="button" class="btn btn-previous">Prethodna</button>
+                        <button type="button" class="btn btn-next">Sljedeća</button>
+                    </div>
+                </fieldset>
+                <!-- Fieldset End -->
+                <!-- Fieldset Start -->
+                <fieldset>
+                    <h4>Alati i tehnologije</h4>
+                    <div class="form-group">
+                        <label for="DigitalTechnology">Korištene digitalne tehnologije</label><br />
+                        <label class="form-check-inline"><input name="DigitalTechnology"
+                                [(ngModel)]="model.DigitalTechnology" class="form-check-input"
+                                #DigitalTechnology="ngModel" [value]="true" type="radio" checked="true">
+                            Da
+                        </label>
+                        <label class="form-check-inline"><input name="DigitalTechnology"
+                                [(ngModel)]="model.DigitalTechnology" class="form-check-input"
+                                #DigitalTechnology="ngModel" [value]="false" type="radio">
+                            Ne
+                        </label>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="TeachingAidTeacher">Nastavna sredstva i pomagala potrebna
+                            <strong>nastavniku</strong></label><br />
+                        <ng-select name="TeachingAidTeacher" [(ngModel)]="model.LaTeachingAidTeacher"
+                            #LaTeachingAidTeacher="ngModel" [multiple]="true">
+                            <ng-option *ngFor="let digitalTool of digitalTools" [value]="digitalTool">
+                                {{digitalTool['teachingAidName'] || 'Digitalni alati'}}</ng-option>
+                            <ng-option *ngFor="let digitalDevice of digitalDevices" [value]="digitalDevice">
+                                {{digitalDevice['teachingAidName'] || 'Digitalni uređaji'}}</ng-option>
+                            <ng-option *ngFor="let digitalGame of digitalGames" [value]="digitalGame">
+                                {{digitalGame['teachingAidName'] || 'Digitalne igre'}}</ng-option>
+                            <ng-option *ngFor="let otherTool of otherTools" [value]="otherTool">
+                                {{otherTool['teachingAidName'] || 'Ostala sredstva i pomagala'}}</ng-option>
+                        </ng-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="TeachingAidUser">Nastavna sredstva i pomagala potrebna
+                            <strong>učenicima</strong></label><br />
+                        <ng-select name="TeachingAidUser" [(ngModel)]="model.LaTeachingAidUser"
+                            #LaTeachingAidTeacher="ngModel" [multiple]="true">
+                            <ng-option *ngFor="let digitalTool of digitalTools" [value]="digitalTool">
+                                {{digitalTool['teachingAidName'] || 'Digitalni alati'}}</ng-option>
+                            <ng-option *ngFor="let digitalDevice of digitalDevices" [value]="digitalDevice">
+                                {{digitalDevice['teachingAidName'] || 'Digitalni uređaji'}}</ng-option>
+                            <ng-option *ngFor="let digitalGame of digitalGames" [value]="digitalGame">
+                                {{digitalGame['teachingAidName'] || 'Digitalne igre'}}</ng-option>
+                            <ng-option *ngFor="let otherTool of otherTools" [value]="otherTool">
+                                {{otherTool['teachingAidName'] || 'Ostala sredstva i pomagala'}}</ng-option>
+                        </ng-select>
+                    </div>
+                    <!-- Navigation Buttons -->
+                    <div class="f1-buttons">
+                        <button type="button" class="btn btn-previous">Prethodna</button>
+                        <button type="submit" id="btn-submit" class="btn btn-submit">
+                            <div *ngIf="activityId === null || activityId === undefined">Kreiraj aktivnost</div>
+                            <div *ngIf="activityId">Ažuriraj aktivnost</div>
+                        </button>
+                    </div>
+                </fieldset>
+                <!-- Fieldset End -->
             </form>
         </div>
     </div>

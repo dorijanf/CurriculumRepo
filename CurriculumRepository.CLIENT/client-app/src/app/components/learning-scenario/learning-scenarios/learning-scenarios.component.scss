@@ -10,6 +10,9 @@
 
 .card-title {
   color: #000;
+  float: left;
+  text-align: center;
+  margin-top: 15px;
 }
 
 h5 {
@@ -98,4 +101,25 @@ ng-select {
 
 .cards {
   margin-top: 5%;
+}
+
+.teaching-icon {
+  width: 55px;
+  height: 55px;
+  background-color: white;
+  border: 1px solid white;
+  border-radius: 5%;
+  float: right;
+}
+
+.result-number {
+  width: 10%;
+}
+
+.teaching-subject {
+  width: 30%;
+}
+
+.sort {
+  width: 20%;
 }

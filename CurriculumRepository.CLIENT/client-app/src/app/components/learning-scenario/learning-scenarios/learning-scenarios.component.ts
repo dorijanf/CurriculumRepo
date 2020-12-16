@@ -1,5 +1,4 @@
-import { query } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryParameters } from 'src/app/models/QueryParameters';
@@ -7,6 +6,7 @@ import { LsListDTO } from 'src/app/models/scenario/LsListDTO';
 import { DataService } from 'src/app/services/data.service';
 import { PaginationService } from 'src/app/services/pagination.service';
 import { ScenariosService } from 'src/app/services/scenarios.service';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-learning-scenarios',
@@ -14,6 +14,7 @@ import { ScenariosService } from 'src/app/services/scenarios.service';
   styleUrls: ['./learning-scenarios.component.scss']
 })
 export class LearningScenariosComponent implements OnInit {
+  faSearch = faSearch;
   resultsForm = this.fb.group({
     scenarios: [''],
     teachingSubjects: [''],
@@ -28,7 +29,7 @@ export class LearningScenariosComponent implements OnInit {
   pageNumber: boolean[] = [];
   orderBy: any = 'lsname';
   scenarios$: Observable<LsListDTO[]>;
-  scenariosPerPage: any = 15;
+  scenariosPerPage: any = 10;
   scenariosPerPageResults: number[];
   teachingSubjects: any;
 
@@ -39,7 +40,7 @@ export class LearningScenariosComponent implements OnInit {
   lsName: string;
   lsGrade: number;
   keyword: string;
-  teachingSubjectId: number;
+  @Input() teachingSubjectId: number;
   pageOfItems: any[];
   constructor(private fb: FormBuilder, private scenariosService: ScenariosService, public paginationService: PaginationService, private dataService: DataService) { }
 
@@ -54,7 +55,7 @@ export class LearningScenariosComponent implements OnInit {
       this.teachingSubjects = teachingSubject;
     })
 
-    this.scenariosPerPageResults = [15, 30, 60, 90, 120, 160];
+    this.scenariosPerPageResults = [10, 20, 50, 100, 150, 200];
   };
 
   showScenariosByPageNumber(page, i) {
@@ -196,6 +197,72 @@ export class LearningScenariosComponent implements OnInit {
       }
     }
     return color;
+  }
+
+  getIcon(teachingSubject) {
+    let path = ''
+    switch (teachingSubject) {
+      case 1: {
+        path = 'assets/icons/matematika.png';
+        break;
+      }
+      case 2: {
+        path = 'assets/icons/hrvatski.png';
+        break;
+      }
+      case 3: {
+        path = 'assets/icons/engleski.png';
+        break;
+      }
+      case 4: {
+        path = 'assets/icons/talijanski.png';
+        break;
+      }
+      case 5: {
+        path = 'assets/icons/njemački.png';
+        break;
+      }
+      case 6: {
+        path = 'assets/icons/priroda.png';
+        break;
+      }
+      case 7: {
+        path = 'assets/icons/informatika.png';
+        break;
+      }
+      case 8: {
+        path = 'assets/icons/tjelesni.png';
+        break;
+      }
+      case 9: {
+        path = 'assets/icons/likovni.png';
+        break;
+      }
+      case 10: {
+        path = 'assets/icons/glazbeni.png';
+        break;
+      }
+      case 11: {
+        path = 'assets/icons/srz.png';
+        break;
+      }
+      case 12: {
+        path = '';
+        break;
+      }
+      case 13: {
+        path = '';
+        break;
+      }
+      case 14: {
+        path = '';
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    return path;
   }
 
 

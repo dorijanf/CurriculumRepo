@@ -19,9 +19,9 @@ namespace CurriculumRepository.API.Controllers
 
         [Authorize(Roles = "administrator, korisnik")]
         [HttpGet("{activityId}")]
-        public async Task<IActionResult> GetActivity([FromRoute] int activityId)
+        public async Task<IActionResult> GetActivity([FromRoute] int scenarioId, [FromRoute] int activityId)
         {
-            var result = await activitiesService.GetActivity(activityId);
+            var result = await activitiesService.GetActivity(scenarioId, activityId);
             return Ok(result);
         }
 
@@ -46,15 +46,15 @@ namespace CurriculumRepository.API.Controllers
         public async Task<IActionResult> DeleteActivity([FromRoute] int scenarioId, [FromRoute] int activityId)
         {
             var result = await activitiesService.DeleteActivity(scenarioId, activityId);
-            return Ok($"Activity {result} successfully deleted.");
+            return Ok(new { activityId = result });
         }
 
         [Authorize(Roles = "korisnik")]
         [HttpPatch("{activityId}")]
-        public async Task<IActionResult> UpdateActivity([FromRoute] int scenarioId, [FromRoute] int activityId, [FromBody] UpdateLaBM model)
+        public async Task<IActionResult> UpdateActivity([FromRoute] int scenarioId, [FromRoute] int activityId, [FromBody] LaBM model)
         {
             var result = await activitiesService.UpdateActivity(scenarioId, activityId, model);
-            return Ok($"Activity {result} successfully updated.");
+            return Ok(new { activityId = result });
         }
     }
 }

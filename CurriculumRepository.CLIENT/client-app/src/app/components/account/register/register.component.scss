@@ -1,64 +1,67 @@
-.preview
-{
-    padding: 10px;
-    position: relative;
+.preview {
+  padding: 10px;
+  position: relative;
 }
 
-.preview i
-{
-    color: white;
-    font-size: 35px;
-    transform: translate(50px,120px);
+.preview i {
+  color: white;
+  font-size: 35px;
+  transform: translate(50px, 120px);
 }
 
-.preview-img
-{
-    border-radius: 100%;
-    box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.7);
+.preview-img {
+  border-radius: 100%;
+  box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.7);
 }
 
-.browse-button
-{
-    width: 200px;
-    height: 200px;
-    border-radius: 100%;
-    position: absolute; /* Tweak the position property if the element seems to be unfit */
-    top: 10px;
-    left: 141px;
-    background: linear-gradient(180deg, transparent, black);
-    opacity: 0;
-    transition: 0.3s ease;
+.browse-button {
+  width: 200px;
+  height: 200px;
+  border-radius: 100%;
+  position: absolute;
+  /* Tweak the position property if the element seems to be unfit */
+  top: 10px;
+  left: 141px;
+  background: linear-gradient(180deg, transparent, black);
+  opacity: 0;
+  transition: 0.3s ease;
 }
 
-.browse-button:hover
-{
-    opacity: 1;
+.browse-button:hover {
+  opacity: 1;
 }
 
-.browse-input
-{
-    width: 200px;
-    height: 200px;
-    border-radius: 100%;
-    transform: translate(-1px,-20px);
-    opacity: 0;
+.browse-input {
+  width: 200px;
+  height: 200px;
+  border-radius: 100%;
+  transform: translate(-1px, -20px);
+  opacity: 0;
 }
 
 h4 {
-    color:#f35b3f;
+  color: #f35b3f;
 }
 
 .card {
-    margin-bottom: 50px;
+  margin-bottom: 50px;
 }
 
 .btn-primary {
-    background-color: #f35b3f;
-    border-color: black;
+  background-color: #f35b3f;
+  border-color: black;
 }
 
 .btn-secondary {
-    background-color: lightslategray;
-    border-color: #f35b3f;
-    margin-left:20px;
+  background-color: lightslategray;
+  border-color: #f35b3f;
+  margin-left: 20px;
+}
+
+.right {
+  text-align: right;
+}
+
+.left {
+  text-align: left;
 }
