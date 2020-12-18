@@ -24,14 +24,15 @@ export class RegisterComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private accountService: AccountService
-  ) {
-    this.route.params.subscribe(params => {
-      this.userId = params['id'];
-    })
-  }
+  ) { }
 
   ngOnInit() {
-    if (this.userId !== undefined || this.userId !== null) {
+    this.route.params.subscribe(params => {
+      if (params['id'] != undefined) {
+        this.userId = params['id'];
+      }
+    });
+    if (this.userId != undefined || this.userId != null) {
       this.accountService.getUser(this.userId).subscribe(user => {
         console.log(user);
         this.model.Email = user['email'];
@@ -47,7 +48,7 @@ export class RegisterComponent implements OnInit {
     this.submitted = true;
 
     this.loading = true;
-    if (this.userId !== undefined || this.userId !== null) {
+    if (this.userId != undefined || this.userId != null) {
       this.accountService.update(this.model)
         .pipe(first())
         .subscribe(

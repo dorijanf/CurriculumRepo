@@ -9,7 +9,6 @@ import { faEdit, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons
 import { tap } from 'rxjs/operators';
 import { AuthenticationResponseDTO } from 'src/app/models/account/AuthenticationResponseDTO';
 import { ActivitiesService } from 'src/app/services/activities.service';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { ConfirmationModalComponent } from '../../confirmation-modal/confirmation-modal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 

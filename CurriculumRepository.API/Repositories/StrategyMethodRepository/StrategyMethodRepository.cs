@@ -28,7 +28,8 @@ namespace CurriculumRepository.API.Repositories.StrategyMethodRepository
 
         public async Task<int> CreateStrategyMethod(StrategyMethodBM model)
         {
-            var strategyMethod = await context.StrategyMethod.FirstOrDefaultAsync(x => x.StrategyMethodName == model.StrategyMethodName);
+            var strategyMethod = await context.StrategyMethod
+                .FirstOrDefaultAsync(x => x.StrategyMethodName == model.StrategyMethodName);
             if(strategyMethod != null)
             {
                 return strategyMethod.IdstrategyMethod;

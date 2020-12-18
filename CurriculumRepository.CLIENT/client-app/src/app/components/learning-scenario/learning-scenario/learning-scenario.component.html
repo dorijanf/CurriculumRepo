@@ -1,7 +1,7 @@
 <div class="wrapper">
     <ng-container *ngIf="(model$ | async) as ls else loading">
         <h2>{{ls['lsname']}}
-            <a [routerLink]="['']" role="button">
+            <a *ngIf="currentUser['id'] === ls['userId']" [routerLink]="['']" role="button">
                 <fa-icon [icon]="faEdit"></fa-icon>
             </a>
         </h2>

@@ -26,11 +26,9 @@ export class ConfirmationModalComponent implements OnInit {
 
   confirm() {
     if (this.entity === "activity") {
-      this.activeModal.close();
       this.deleteActivity(this.scenarioId, this.activityId);
     }
     else {
-      this.activeModal.close();
       this.deleteScenario(this.scenarioId);
     }
   }

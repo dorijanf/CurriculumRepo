@@ -40,7 +40,7 @@
                     <label for="Username">Korisničko ime</label>
                     <input type="text" name="Username" class="form-control" [(ngModel)]="model.Username"
                         #userName="ngModel" [ngClass]="{ 'is-invalid': f.submitted && userName.invalid }" required
-                        maxLength="14" minLength="6" [disabled]="userId !== null || userId !== undefined"/>
+                        maxLength="14" minLength="6" [disabled]="userId != null || userId != undefined"/>
                     <div *ngIf="f.submitted && userName.invalid" class="invalid-feedback">
                         <div *ngIf="userName.errors.required">Unos korisničkog imena je obavezno</div>
                         <div *ngIf="userName.errors.maxLength">Korisničko ime mora biti kraće od 14 znakova</div>

@@ -21,6 +21,7 @@ using CurriculumRepository.CORE.Data.Enums;
 using CurriculumRepository.API.Extensions.Parameters;
 using CurriculumRepository.API.Helpers;
 using CurriculumRepository.API.Helpers.Sort;
+using CurriculumRepository.CORE.Data.Models;
 
 namespace CurriculumRepository.API.Services.Scenario
 {
@@ -170,23 +171,73 @@ namespace CurriculumRepository.API.Services.Scenario
             lsDTO.Las = await activityService.GetActivities(id);
             lsDTO.Las = lsDTO.Las.OrderBy(x => x.OrdinalNumber).ToList();
 
+            var teachingAidsTeacher = new List<TeachingAid>();
+            var teachingAidsStudent = new List<TeachingAid>();
+            var strategyMethodsList = new List<StrategyMethodBM>();
             // Strategy method, Collaboration and Teaching Aids from LA
             foreach (var la in lsDTO.Las)
             {
                 lsDTO.CollaborationNames.Add(la.Lacollaboration);
                 lsDTO.CollaborationNames = lsDTO.CollaborationNames.Union(lsDTO.CollaborationNames).ToList();
                 lsDTO.StrategyMethods = lsDTO.StrategyMethods.Union(la.StrategyMethods).ToList();
+
+                var strategyMethods = context.LastrategyMethod.Where(x => x.Laid == la.Idla);
+                foreach(var sM in strategyMethods)
+                {
+                    var strategyM = await context.StrategyMethod.Where(x => x.IdstrategyMethod == sM.StrategyMethodId).ToListAsync();
+                    foreach(var s in strategyM)
+                    {
+                        var sMExists = strategyMethodsList.FirstOrDefault(x => x.IdstrategyMethod == s.IdstrategyMethod);
+                        if(sMExists == null)
+                        {
+                            strategyMethodsList.Add(mapper.Map<StrategyMethodBM>(s));
+                        }
+                    }
+                }
+
                 var teachingAidTeacher = context.LateachingAid.Where(x => x.Laid == la.Idla && x.LateachingAidUser == false);
                 foreach(var tat in teachingAidTeacher)
                 {
-                    lsDTO.TeachingAidTeacher = await context.TeachingAid.Where(x => x.IdteachingAid == tat.TeachingAidId).ToListAsync();
+                    var tats = await context.TeachingAid.Where(x => x.IdteachingAid == tat.TeachingAidId).ToListAsync();
+                    foreach(var t in tats)
+                    {
+                        var tExists = teachingAidsTeacher.FirstOrDefault(x => x.TeachingAidName == t.TeachingAidName);
+                        if (tExists == null)
+                        {
+                            teachingAidsTeacher.Add(t);
+                        }
+                    }
                 }
                 var teachingAidStudent = context.LateachingAid.Where(x => x.Laid == la.Idla && x.LateachingAidUser == true);
                 foreach(var tas in teachingAidStudent)
                 {
-                    lsDTO.TeachingAidUser = await context.TeachingAid.Where(x => x.IdteachingAid == tas.TeachingAidId).ToListAsync();
+                    var tass = await context.TeachingAid.Where(x => x.IdteachingAid == tas.TeachingAidId).ToListAsync();
+                    foreach(var t in tass)
+                    {
+                        var tExists = teachingAidsStudent.FirstOrDefault(x => x.TeachingAidName == t.TeachingAidName);
+                        if(tExists == null)
+                        {
+                            teachingAidsStudent.Add(t);
+                        }
+                    }
                 }
             }
+
+            if (teachingAidsTeacher.Count > 0)
+            {
+                lsDTO.TeachingAidTeacher = teachingAidsTeacher;
+            }
+
+            if (teachingAidsStudent.Count > 0)
+            {
+                lsDTO.TeachingAidUser = teachingAidsStudent;
+            }
+
+            if (strategyMethodsList.Count > 0)
+            {
+                lsDTO.StrategyMethods = strategyMethodsList;
+            }
+
             return lsDTO;
         }
 
